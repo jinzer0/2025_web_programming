@@ -1,0 +1,125 @@
+/*202211286 김진영*/
+
+* {
+	margin: 0;
+	paddig: 0;
+	list-style-type: none;
+	text-decoration-line: none;
+
+}
+
+a {
+	
+	
+}
+
+body {
+	font-size: 24px;
+	position: relative;
+}
+
+input[type="radio"] {
+	display: none;
+}
+
+
+
+header {
+	height:150px;
+	text-align:center;
+	font-size: 60px;
+	font-weight:bold;
+	background-color: white;
+	position: sticky;
+	top: 0;
+	width: 100%;
+	line-height: 150px;
+	font-family: "Do Hyeon", sans-serif;
+	border-bottom: 1px solid black;
+}
+
+nav {
+	height: 70px;
+	border-bottom: 1px solid black;
+}
+
+footer {
+	height: 100px;
+	text-align:center;
+	font-size: 30px;
+	background-color:white;
+	bottom: 0;
+	position: fixed;
+	width: 100%;
+	line-height: 100px;
+	border-top: 1px solid black;
+}
+
+h2 {
+	text-align:center;
+	margin-bottom: 50px;
+}
+
+button {
+	width: 100px;
+	height: 32px;
+	border: 1px solid black;
+	text-align:center;
+	font-weight:bold;
+	font-size:20px;
+}
+
+label {
+	font-weight: bold;
+}
+
+.menu {
+	display:inline-block;
+	width: 100px;
+	margin: 0 50px;
+	font-size: 25px;
+	font-weight:bold;
+	line-height:70px;
+	text-align:center;
+}
+
+
+.center {
+	text-align:center;
+}
+
+#menuBox {
+	width: 620px;
+	margin: auto auto;
+	height: 100%;
+	display: flex;
+	justify-content: space-evenly;
+	align-content: center;
+	line-height: 70px;
+}
+
+#content {
+	width: 600px;
+	height: 1000px;
+	border-left: 1px solid grey;
+	border-right: 1px solid grey;
+	margin: auto auto;
+}
+
+#menu1:checked + label,
+#menu2:checked + label,
+#menu3:checked + label {
+	color: blue;
+	text-decoration-line: underline;
+}
+
+.story {
+	display: none;
+}
+
+
+body:has(#menu1:checked)  .story:nth-child(1),
+body:has(#menu2:checked)  .story:nth-child(2),
+body:has(#menu3:checked)  .story:nth-child(3){
+	display: block;
+}

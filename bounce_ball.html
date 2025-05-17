@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Bouncing Ball Example</title>
+    <style>
+        canvas {
+            background: yellow;
+            border: 1px dotted black;
+        }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas" width="300" height="200"></canvas>
+<script>
+    let context = document.getElementById("myCanvas").getContext("2d");
+    let ballX = 150, ballY = 100;
+    let velocity = 5;
+    let x_sign = 1, y_sign = 1;
+    let timer = setInterval(draw, 10);
+    let angle = 150;
+    function draw() {
+        angle = Math.PI*Math.abs((180 - angle)) / 180;
+        ballY += y_sign * velocity * Math.sin(angle);
+        ballX += x_sign * velocity * Math.cos(angle);
+        context.clearRect(0, 0, 300, 200);
+        context.beginPath();
+        context.fillStyle = "red";
+        context.arc(ballX, ballY, 10, 0, 2 * Math.PI, true);
+
+        context.fill();
+        if (ballY <= 10 || ballY >= 190) y_sign *= -1;
+        if (ballX <= 10 || ballX >= 290) x_sign *= -1;
+    }
+
+    function stopBall() {
+        clearInterval(timer);
+    }
+</script>
+<button id="stopball" onclick="stopBall();">stop</button>
+</body>
+</html>

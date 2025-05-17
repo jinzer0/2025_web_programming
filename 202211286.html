@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HTML5 Basic Page</title>
+    <style>
+        .outer-menu-item:hover {font-weight: bold; background-color: #FF9D6E; color: #282828;}
+        .input-search:focus {background-color: yellow; outline: 0;}
+        * {font-family: 맑은 고딕, AppleGothic,sans-serif; margin:0; padding: 0;}
+        a {text-decoration-line: none;}
+        li {list-style: none;}
+        body {background-color: rgb(10, 20, 37); width: 960px; margin: 0 auto 0 auto;}
+        article {padding: 0 10px 20px 10px; border-bottom: 1px solid #C9C9C9;}
+        #header {padding: 40px 50px 40px 50px;}
+        #navigation {margin-bottom: 20px; border-top: 1px solid #C9C9C9; border-bottom: 1px solid #C9C9C9; height: 40px;}
+        #wrapper {background-color: white; padding: 10px 20px 10px 20px; margin-top: 40px;}
+        #footer {margin-top: 10px; height: 50px; text-align: center; line-height: 50px; background-color: #FF9D6E;}
+        #main-section {width: 710px; float: left;}
+        #main-aside {width: 200px; float: right;}
+        #content {overflow: auto;}
+        .pull-left {height:40px; float: left;}
+        .article-header {padding-top: 20px; padding-bottom: 20px;}
+        .input-search-submit {display: block; height: 26px; width: 50px; border-bottom-right-radius: 15px; border-top-right-radius: 15px; float: right;}
+        .input-search {display: block; height: 24px; width: 120px; padding-left: 10px; border: 1px solid #CCCCCC; border-bottom-left-radius: 15px; border-top-left-radius: 15px; float: left;}
+        .pull-right {padding: 7px; height: 26px; float: right;}
+        .outer-menu-item {display: block; width: 80px; height: 30px; text-align: center; padding: 5px 20px 5px 20px; line-height: 30px; float: left;}
+        .title {font-size: 30px; color: #191919;}
+        .subtitle {font-size: 15px;color: #383838;}
+        .article-title {font-size: 25px;}
+        .article-date {font-size: 13px;}
+        .article-body {font-size: 14px;}
+        .aside-list li a {font-size: 13px; color: orange;}
+        .aside-list > h3 {font-size: 15px; color: blue;}
+        #footer > a {font-size: 20px; color: #282828; font-weight: bold;}
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <header id="header">
+        <h1 class="title">웹 프로그래밍 완전 정복</h1>
+        <h2 class="subtitle">건국대학교 컴퓨터공학부</h2>
+    </header>
+    <nav id="navigation">
+        <div class="pull-left">
+            <ul>
+                <li class="outer-menu-item">HTML5</li>
+                <li class="outer-menu-item">CSS</li>
+                <li class="outer-menu-item">JavaScript</li>
+            </ul>
+        </div>
+        <div class="pull-right">
+            <form>
+                <input type="text" class="input-search">
+                <input type="submit" class="input-search-submit" value="검색">
+            </form>
+        </div>
+    </nav>
+    <div id="content">
+        <section id="main-section">
+            <article>
+                <div class="article-header">
+                    <h1 class="article-title">HTML5 개요와 활용</h1>
+                    <p class="article-date">2025년 3월 12일</p>
+                </div>
+                <div class="article-body">
+                    <img src="https://placehold.co/430x280" alt="no image">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras mattis vehicula dolor a placerat. Integer nulla urna, venenatis
+                        at ante vitae, mattis faucibus nibh. Proin a viverra neque. Quisque fermentum at sapien facilisis commodo. Donec tempus erat
+                        felis, vulputate dictum ex varius sed. Integer congue tristique feugiat. Phasellus eu sapien sed elit tincidunt tempus et
+                        vitae urna. Maecenas fermentum sed magna feugiat congue. Etiam eget euismod ligula, sed mollis libero. Duis quis ex quis arcu
+                        eleifend consequat. Pellentesque susc\ipit quam sed est gravida ultrices. Sed eget libero in magna consequat ullamcorper. Etiam
+                        quis neque ac nisi maximus suscipit. Nam in ex dictum, aliquam neque in, placerat mi. Mauris in felis ac metus luctus rhoncus
+                        id eu mi. Maecenas id euismod justo, eget rhoncus nulla.
+
+                        Sed volutpat efficitur faucibus. Donec posuere facilisis mattis. In ac mi ultricies, convallis est vulputate, cursus elit.
+                        Nulla molestie venenatis suscipit. Aenean tristique vel ex blandit placerat. Aenean gravida tristique orci, vehicula viverra
+                        dolor scelerisque fermentum. Ut quis accumsan nulla. Phasellus quis tempor dolor, non sodales purus. Suspendisse potenti. In
+                        pellentesque cursus arcu, facilisis gravida quam sodales quis. Praesent condimentum neque eget justo rutrum luctus. Proin eu
+                        libero arcu. Mauris tortor lectus, convallis quis tincidunt non, sollicitudin id urna. Vivamus egestas ultricies finibus.
+
+                        Vivamus vel ante eget ipsum volutpat dapibus. Fusce nisi massa, efficitur non dictum a, accumsan vitae justo. Quisque
+                        elementum lectus metus, non vehicula tortor maximus ut. Vestibulum gravida tempor mi at eleifend. Etiam cursus, arcu eu
+                        tincidunt ornare, orci purus ullamcorper mi, sed elementum lectus turpis nec velit. Sed dignissim nulla lectus, maximus
+                        sodales urna faucibus non. Nam bibendum semper neque, non fringilla erat semper non. Proin nulla turpis, malesuada eget cursus
+                        a, pulvinar eu mauris. </p>
+                </div>
+            </article>
+            <article>
+                <div class="article-header">
+                    <h1 class="article-title">HTML5 개요와 활용</h1>
+                    <p class="article-date">2025년 3월 12일</p>
+                </div>
+                <div class="article-body">
+                    <img src="https://placehold.co/430x280" alt="no image">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras mattis vehicula dolor a placerat. Integer nulla urna, venenatis
+                        at ante vitae, mattis faucibus nibh. Proin a viverra neque. Quisque fermentum at sapien facilisis commodo. Donec tempus erat
+                        felis, vulputate dictum ex varius sed. Integer congue tristique feugiat. Phasellus eu sapien sed elit tincidunt tempus et
+                        vitae urna. Maecenas fermentum sed magna feugiat congue. Etiam eget euismod ligula, sed mollis libero. Duis quis ex quis arcu
+                        eleifend consequat. Pellentesque suscipit quam sed est gravida ultrices. Sed eget libero in magna consequat ullamcorper. Etiam
+                        quis neque ac nisi maximus suscipit. Nam in ex dictum, aliquam neque in, placerat mi. Mauris in felis ac metus luctus rhoncus
+                        id eu mi. Maecenas id euismod justo, eget rhoncus nulla.
+
+                        Sed volutpat efficitur faucibus. Donec posuere facilisis mattis. In ac mi ultricies, convallis est vulputate, cursus elit.
+                        Nulla molestie venenatis suscipit. Aenean tristique vel ex blandit placerat. Aenean gravida tristique orci, vehicula viverra
+                        dolor scelerisque fermentum. Ut quis accumsan nulla. Phasellus quis tempor dolor, non sodales purus. Suspendisse potenti. In
+                        pellentesque cursus arcu, facilisis gravida quam sodales quis. Praesent condimentum neque eget justo rutrum luctus. Proin eu
+                        libero arcu. Mauris tortor lectus, convallis quis tincidunt non, sollicitudin id urna. Vivamus egestas ultricies finibus.
+
+                        Vivamus vel ante eget ipsum volutpat dapibus. Fusce nisi massa, efficitur non dictum a, accumsan vitae justo. Quisque
+                        elementum lectus metus, non vehicula tortor maximus ut. Vestibulum gravida tempor mi at eleifend. Etiam cursus, arcu eu
+                        tincidunt ornare, orci purus ullamcorper mi, sed elementum lectus turpis nec velit. Sed dignissim nulla lectus, maximus
+                        sodales urna faucibus non. Nam bibendum semper neque, non fringilla erat semper non. Proin nulla turpis, malesuada eget cursus
+                        a, pulvinar eu mauris. </p>
+                </div>
+            </article>
+        </section>
+        <aside id="main-aside">
+            <div class="aside-list">
+                <h3>카테고리</h3>
+                <ul>
+                    <li><a href="#">데이터</a></li>
+                    <li><a href="#">데이터</a></li>
+                    <li><a href="#">데이터</a></li>
+                    <li><a href="#">데이터</a></li>
+                    <li><a href="#">데이터</a></li>
+                </ul>
+            </div>
+            <div class="aside-list">
+                <h3>최근 글</h3>
+                <ul>
+                    <li><a href="#">데이터</a></li>
+                    <li><a href="#">데이터</a></li>
+                    <li><a href="#">데이터</a></li>
+                    <li><a href="#">데이터</a></li>
+                    <li><a href="#">데이터</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    <footer id="footer">
+        <a href="#">Created By Jinyeong Kim</a>
+    </footer>
+</div>
+</body>
+</html>

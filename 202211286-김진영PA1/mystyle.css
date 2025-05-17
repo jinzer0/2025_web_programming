@@ -1,0 +1,458 @@
+@import url('https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400..700&family=Mona+Sans:ital,wdth,wght@0,75..125,200..900;1,75..125,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600;700&family=Noto+Sans+KR:wght@100..900&display=swap');
+
+
+html {
+    background-color: black;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#wrapper {
+    background-color: #f7f7f7;
+    background-size: cover;
+    min-width: 1200px;
+}
+
+
+#category:hover ~ #sub-category, #sub-category:hover {
+    opacity: 1;
+    transform: translateY(-15px);
+    pointer-events: auto;
+}
+
+/* submenu는 기존처럼 부드럽게 나타나게 함 */
+#sub-category {
+    position: absolute;
+    top: 100%; /* 메뉴 바로 아래 위치 */
+    right: 0;
+    background-color: #222;
+    padding: 10px;
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+}
+
+/* a 태그 hover 시 submenu가 나타남 */
+
+
+/* label 태그는 block 처리하고 텍스트 왼쪽 정렬 */
+#sub-category > label {
+    display: block;
+    text-align: left;
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    font-family: "Noto Sans KR", "IBM Plex Sans KR", sans-serif;
+    font-size: 20px;
+
+}
+
+#sub-category > label:hover {
+    color: darkgrey;
+    transition: 0.5s;
+    font-size: 20px;
+}
+
+#wrapper:has(#article_1:checked) #sub-category > label[for="article_1"],
+#wrapper:has(#article_2:checked) #sub-category > label[for="article_2"],
+#wrapper:has(#article_3:checked) #sub-category > label[for="article_3"],
+#wrapper:has(#article_4:checked) #sub-category > label[for="article_4"] {
+    color: darkgrey;
+}
+
+
+
+.main-article-image, .sub-article-image {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    text-align: center;
+}
+
+
+.main-article-image {
+    background-color: white;
+    width: 600px;
+    height: 400px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.6);
+    transition: 0.3s ease, filter 0.3s ease;
+}
+
+
+.content-radio {
+    display: none;
+}
+
+#main-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 1400px;
+    font-size: 30px;
+}
+
+
+#label-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 20%;
+    width: 100%;
+    height: 400px;
+}
+
+#label-box {
+    border-radius: 9999px;
+    background-color: #191919;
+    padding: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 1500px;
+    height: 100px;
+    min-width: 1130px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+
+}
+
+label {
+    color: #383838;
+    transition: 0.5s ease;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+label:hover {
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+
+#wrapper:has(#article_1:checked) #top-content-1,
+#wrapper:has(#article_2:checked) #top-content-2,
+#wrapper:has(#article_3:checked) #top-content-3,
+#wrapper:has(#article_4:checked) #top-content-4 {
+    display: flex;
+}
+
+
+.content-radio:nth-of-type(1):checked ~ label[for="article_1"],
+.content-radio:nth-of-type(2):checked ~ label[for="article_2"],
+.content-radio:nth-of-type(3):checked ~ label[for="article_3"],
+.content-radio:nth-of-type(4):checked ~ label[for="article_4"] {
+    color: white;
+    font-size: 40px;
+}
+
+
+#main-container {
+    text-align: center;
+    color: white;
+    font-family: "Mona Sans", "Noto Sans KR", "IBM Plex Sans KR", sans-serif;
+    font-weight: 900;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+
+
+body {
+    background-color: white;
+}
+
+a {
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    transition: 0.5s ease;
+    text-decoration-line: none;
+
+}
+
+a:hover {
+    color: darkgrey;
+    transition: 0.5s;
+}
+
+#navigation {
+    height: 10%;
+    padding: 5px 0 5px 0;
+    background-color: rgba(12, 14, 18, 0.9);
+    backdrop-filter: blur(3px);
+    display: flex;
+    justify-content: center;
+    font-family: "Mona Sans", sans-serif;
+    font-weight: 800;
+    font-size: 40px;
+    font-style: normal;
+    font-variation-settings: "wdth" 120;
+    text-shadow: 4px 4px 9px rgba(0, 0, 0, 0.5);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 0 20px black;
+}
+
+#left-side {
+    min-width: 386px;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#right-side {
+    position: relative;
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+
+#right-side > a {
+    margin: 0 20px 0 20px;
+    font-family: "Markazi Text", sans-serif;
+    text-align: center;
+}
+
+
+#side-container {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+
+}
+
+#main-title-h1 {
+    background: linear-gradient(to bottom, transparent 60%, #f7f7f7 100%), url("img/IMG_6467.jpg") no-repeat top/cover;
+    width: 100%;
+    height: 1000px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-shadow: 2px 5px 15px black;
+}
+
+#main-title-h1 > h2 {
+    margin-top: 30px;
+}
+
+#content {
+    /*background-color: black;*/
+    min-width: 1200px;
+    min-height: 1200px;
+    margin: 0 auto 100px auto;
+    display: flex;
+    justify-content: center;
+}
+
+
+.top-content {
+    width: 80%;
+    min-width: 1100px;
+    min-height: 1000px;
+    background-color: rgb(245, 243, 234);
+    border: 2px solid rgb(47, 11, 33);
+    box-shadow: 10px 10px rgb(47, 11, 33);
+    border-radius: 25px;
+    margin: auto auto;
+
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    font-family: "Noto Sans KR", "IBM Plex Sans KR", sans-serif;
+    font-size: 50px;
+    padding: 5%;
+}
+
+
+.top-content img, video {
+    align-self: center;
+
+}
+
+.content-t {
+    font-weight: 800;
+    font-size: 50px;
+    margin-bottom: 20px;
+}
+
+.content-p {
+    font-weight: normal;
+    font-size: 25px;
+    line-height: 2;
+    letter-spacing: 1px;
+}
+
+
+
+img, video {
+    transition: 0.3s ease;
+    max-width: 50%;
+    border-radius: 4%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    margin: 40px;
+}
+
+
+img:hover, video:hover {
+    transform: scale(1.02);
+    transition: 0.3s ease;
+}
+
+#content h5, h6 {
+    margin: 20px;
+}
+
+.code-container {
+    border: 2px solid black;
+    border-radius: 5px;
+    box-shadow: 5px 5px black;
+    width: 100%;
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: #c3c1b7;
+}
+
+.code-container > h6 {
+    font-size: 25px;
+}
+
+#top-content-4 .code-container {
+    text-align: left;
+}
+
+#content img:active, video:active {
+    transform: scale(2);
+}
+
+.preview {
+    display: flex;
+    justify-content: center;
+}
+
+.thumbnail {
+    width: 20%;
+    height: 50px;
+    border: 2px solid black;
+    border-radius: 9999px;
+    text-align: center;
+    margin: 0 auto;
+    background-color: #191919;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.thumbnail > label {
+    width: 40%;
+    color: #C9C9C9;
+}
+
+.img-container img {
+    display: none;
+}
+
+input[name="thumb1"],
+input[name="thumb2"],
+input[name="thumb3"],
+input[name="thumb4"],
+input[name="thumb5"],
+input[name="thumb6"],
+input[name="thumb7"],
+input[name="thumb8"],
+input[name="thumb9"] {
+    display: none;
+}
+
+.img-container:has(#thum1:checked) #img1,
+.img-container:has(#thum2:checked) #img2,
+.img-container:has(#thum3:checked) #img3,
+.img-container:has(#thum4:checked) #img4,
+.img-container:has(#thum5:checked) #img5,
+.img-container:has(#thum6:checked) #img6,
+.img-container:has(#thum7:checked) #img7,
+.img-container:has(#thum8:checked) #img8,
+.img-container:has(#thum9:checked) #img9,
+.img-container:has(#thum10:checked) #img10,
+.img-container:has(#thum11:checked) #img11,
+.img-container:has(#thum12:checked) #img12,
+.img-container:has(#thum13:checked) #img13,
+.img-container:has(#thum14:checked) #img14,
+.img-container:has(#thum15:checked) #img15,
+.img-container:has(#thum16:checked) #img16,
+.img-container:has(#thum17:checked) #img17,
+.img-container:has(#thum18:checked) #img18,
+.img-container:has(#thum19:checked) #img19,
+.img-container:has(#thum20:checked) #img20,
+.img-container:has(#thum21:checked) #img21,
+.img-container:has(#thum22:checked) #img22 {
+    display: block;
+}
+
+input[id="thum1"]:checked ~ label[for="thum1"],
+input[id="thum2"]:checked ~ label[for="thum2"],
+input[id="thum3"]:checked ~ label[for="thum3"],
+input[id="thum4"]:checked ~ label[for="thum4"],
+input[id="thum5"]:checked ~ label[for="thum5"],
+input[id="thum6"]:checked ~ label[for="thum6"],
+input[id="thum7"]:checked ~ label[for="thum7"],
+input[id="thum8"]:checked ~ label[for="thum8"],
+input[id="thum9"]:checked ~ label[for="thum9"],
+input[id="thum10"]:checked ~ label[for="thum10"],
+input[id="thum11"]:checked ~ label[for="thum11"],
+input[id="thum12"]:checked ~ label[for="thum12"],
+input[id="thum13"]:checked ~ label[for="thum13"],
+input[id="thum14"]:checked ~ label[for="thum14"],
+input[id="thum15"]:checked ~ label[for="thum15"],
+input[id="thum16"]:checked ~ label[for="thum16"],
+input[id="thum17"]:checked ~ label[for="thum17"],
+input[id="thum18"]:checked ~ label[for="thum18"],
+input[id="thum19"]:checked ~ label[for="thum19"],
+input[id="thum20"]:checked ~ label[for="thum20"],
+input[id="thum21"]:checked ~ label[for="thum21"],
+input[id="thum22"]:checked ~ label[for="thum22"] {
+    color: black;
+    background-color: white;
+    border-radius: 9999px;
+    transition: 0.7s ease;
+}
+
+
+footer {
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+    font-size: 40px;
+    font-family: "Mona Sans", "IBM Plex Sans KR", "Noto Sans KR", sans-serif;
+    font-weight: 800;
+    background-color: rgb(12, 14, 18);
+
+}
+
+.footer-link-sns {
+    font-size: 20px;
+    height: 40px;
+    text-align: center;
+}
+
+.footer-link-sns > a {
+    margin: 0 20px 0 20px;
+}

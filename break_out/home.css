@@ -1,0 +1,34 @@
+#start-screen {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+
+}
+
+#start-screen-left-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 40%;
+    height: 100%;
+    background-color: black;
+}
+
+
+#start-screen-left-container img {
+    width: 80%;
+}
+
+#start-screen-right-container {
+    width: 60%;
+    height: 100%;
+    overflow: hidden;
+    background: linear-gradient(to left, transparent 10%, black 100%), url("img/bg1.jpg") top/cover;
+}
+
+
+.screen-bg {
+    height: 100%;
+    display: none;
+}

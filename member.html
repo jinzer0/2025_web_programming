@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+    <script>
+        function show() {
+            let form = document.myform;
+            let id = form["id"].value;
+            let name = form["name"].value;
+            let password = form["password"].value;
+            let gender = form["gender"].value;
+            let phone = form["first_num"].value + form["middle_num"].value + form["last_num"].value;
+            let address = form["address"].value;
+            let hobby = "";
+            for (let i = 1; i < 5; i++) if (form["hobby" + i].checked) hobby += form["hobby" + i].value + " ";
+
+            let re_space = /\s+/;
+            let re_blank = /^.$/;
+            let re_six = /[^\s].{6,}/;
+            let re_number = /[\d]/;
+            let re_char = /[\w]/;
+            let re_special = /[@#$]+/;
+            let re_notspe = /[^`~!%\^&\*|\\\'\"\/;:?]/;
+
+            let id_space = true;
+            let id_six = true;
+            let name_space = true;
+            let pw_space = true;
+            let pw_six = true;
+            let pw_number;
+            let pw_char;
+            let pw_special = true;
+
+            // id 6자리 이상, 공백 안됨
+            if (re_space.test(id)) id_space = false;
+            if (!re_six.test(id)) id_six = false;
+            // name 공백 안됨
+            if (re_space.test(name)) name_space = false;
+
+            // password 공백 안됨, 6자리 이상, 숫자, 영문자, 특수문자 구성, 특수문자 @#$ 중 하나 이상 포함
+            if (re_space.test(password)) pw_space = false;
+            if (!re_six.test(password)) pw_six = false;
+            if (!re_special.test(password)) pw_special = false;
+            if (re_notspe.test(password)) pw_special = false;
+
+
+
+            let str = "";
+            if (id_space && id_six && name_space && pw_space && pw_six && pw_special) str = id + "\n" + name + "\n" + password + "\n" + gender + "\n" + phone + "\n" + address + "\n" + hobby;
+            if (!id_space) str += "id 입력하기" + "\n";
+            if (!id_six) str += "id 6자 이상 입력" + "\n";
+            if (!name_space) str += "이름 입력하기" + "\n";
+            if (!pw_space) str += "pw 입력하기" + "\n";
+            if (!pw_six) str += "pw 6자 이상 입력" + "\n";
+            if (!pw_special) str += "pw 특수문자(@, #, $ only) 포함하기" + "\n";
+            alert(str);
+        }
+    </script>
+</head>
+<body>
+<h2>회원가입</h2>
+<form name="myform" action="getid.jsp" method="post">
+    <table>
+        <tr>
+            <td>아이디</td>
+            <td><input type="text" size="15" maxlength="12" name="id"></td>
+        </tr>
+        <tr>
+            <td>이름</td>
+            <td><input type="text" size="15" maxlength="12" name="name"></td>
+        </tr>
+        <tr>
+            <td>비밀번호</td>
+            <td><input type="password" size="15" maxlength="10" name="password"></td>
+        </tr>
+        <tr>
+            <td>성별</td>
+            <td>
+                <input type="radio" name="gender" value="male" checked>남
+                <input type="radio" name="gender" value="female">여
+            </td>
+        </tr>
+        <tr>
+            <td>휴대전화</td>
+            <td>
+                <label>
+                    <select name="first_num">
+                        <option value="010" selected>010</option>
+                        <option value="011">011</option>
+                        <option value="016">016</option>
+                        <option value="017">017</option>
+                        <option value="070">070</option>
+                    </select>
+                </label> - <input type="text" size="4" name="middle_num"> - <input type="text" size="4" name="last_num">
+            </td>
+        </tr>
+        <tr>
+            <td>주소</td>
+            <td><input name="address" type="text" size="30"></td>
+        </tr>
+        <tr>
+            <td>취미</td>
+            <td>
+                <input type="checkbox" name="hobby1" value="music">음악감상
+                <input type="checkbox" name="hobby2" value="read">독서
+                <input type="checkbox" name="hobby3" value="shopping">쇼핑
+                <input type="checkbox" name="hobby4" value="workout">운동
+            </td>
+        </tr>
+        <tr>
+            <td>자기소개</td>
+            <td><textarea name="introduce" rows="5" cols="60"></textarea></td>
+        </tr>
+    </table>
+    <input type="button" name="sumbit" value="회원 가입" onclick="show();">
+    <input type="reset" name="reset" value="다시 작성">
+</form>
+</body>
+</html>

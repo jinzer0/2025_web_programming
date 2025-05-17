@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="playjs.css">
+    <script src="playjs.js"></script>
+</head>
+<body>
+<!-- <body onload="changeColor();"> -->
+<header>
+    <div id="title">
+        Play with JS!
+    </div>
+    <div id="ctime">
+    </div>
+    <nav>
+        <ul>
+            <li><a class="main-menu" href="#">Basic JS</a></li>
+            <li><a class="main-menu" href="#">Hangman</a></li>
+            <li><a class="main-menu" href="#">jQuery</a></li>
+            <li><a class="main-menu" href="#">Advanced JS</a></li>
+        </ul>
+    </nav>
+</header>
+<div id="content">
+    <div class="lab">
+        <h3>덧셈 계산기</h3>
+        <form name="myform">
+            첫번째 정수:
+            <input id="x"><br>
+            두번째 정수:
+            <input id="y"><br>
+            합계:
+            <input id="sum"><br>
+            <input type="button" value="계산" id="calculate_button">
+            <!-- <input type="button" value="계산" onclick="calc();"> -->
+        </form>
+    </div>
+    <div class="lab">
+        <h2>구구단 표</h2>
+        <table>
+        <script>
+            document.write("<tr>");
+            for (let i = 2; i < 10; i++) {
+                document.write(`<td class="table-header">${i}단</td>`);
+            }
+            document.write("</tr>");
+
+            for (let i = 2; i < 10; i++) {
+                document.write("<tr>");
+                for (let j = 1; j < 9; j++) {
+                    document.write(`<td>${j+1}x${i-1}=${i*j}</td>`);
+                }
+                document.write("</tr>");
+            }
+
+            for (let i = 2; i < 10; i++) {
+                document.write(`<td>${i}x${9}=${i*9}</td>`);
+            }
+        </script>
+        </table>
+    </div>
+    <div class="lab">
+        <h3>숫자 맞추기 게임</h3>
+        <p>이 게임은 컴퓨터가 생성한 숫자를 맞추는 게임입니다.<br>
+        숫자는 1부터 100사이에 있습니다.</p><br>
+        <form>
+            숫자:
+            <input type="text" id="user" size="5">
+            <input type="button" value="확인" id="num_guess">
+            <!-- <input type="button" value="확인" onclick="numGuess();"> -->
+            <input type="button" value="다시 시작" id="re_play">
+            <!-- <input type="button" value="다시 시작" onclick="replay();"> -->
+            <br><br>
+            추측횟수:
+            <input type="text" id="guesses" size="5" value="0">
+            힌트:
+            <input type="text" id="result" size="16">
+            <input type="text" id="test" size="16">
+        </form>
+    </div>
+    <div class="lab">
+        <h3>단어장</h3><br>
+        <button class="wordButton" id="add_word">단어 추가</button>
+        <!-- <button class="wordButton" onclick="addWord();">단어 추가</button> -->
+        <button class="wordButton" id="show_wordlist">단어 리스트</button>
+        <!-- <button class="wordButton" onclick="showWordList();">단어 리스트</button>/ -->
+        <button class="wordButton" id="sort_word">단어 정렬</button>
+        <!-- <button class="wordButton" onclick="sortWord();">단어 정렬</button> -->
+        <button class="wordButton" id="shuffle_word">단어 섞기</button>
+        <!-- <button class="wordButton" onclick="shuffleWord();">단어 섞기</button> -->
+        <h4>단어 리스트</h4>
+        <div id="wordList"></div>
+    </div>
+    <div class="lab">
+        <h2>innerHTML TEST</h2>
+        <p id="innerTest">여기를 눌러보세요.</p>
+        <!-- <p id="innerTest" onclick="innerTest();">여기를 눌러보세요.</p> -->
+    </div>
+    <div class="lab">
+        <button id="change_image">이미지 변경</button>
+        <!-- <button onclick="changeImage();">이미지 변경</button> -->
+        <img id="img" src="000073870025.jpg">
+    </div>
+    <div class="lab">
+        <h3>색상 테이블 출력하기</h3>
+        <input type="button" id="ctCreate" value="출력하기" onclick="createColorTable();">
+        <!-- <input type="button" id="ctCreate" value="출력하기" onclick="createColorTable();"> -->
+        <input type="button" id="ctRemove" value="없애기" onclick="removeColorTable();">
+        <!-- <input type="button" id="ctRemove" value="없애기" onclick="removeColorTable();"> -->
+        <div id="colorTable"></div>
+    </div>
+    <div class="lab">
+        <div id="target">
+            This is a Text.
+        </div>
+        <button id="stop_text_color">중지</button>
+        <!-- <button onclick="stopTextColor();">중지</button> -->
+    </div>
+    <div class="lab">
+        <h3>상자 이동하기</h3>
+        <p><button id="moveBox">Click Me</button></p>
+        <div id="container">
+            <div id="animate"></div>
+        </div>
+    </div>
+</div>
+<div id="hangman">
+    <div>
+        <img id="hangmanpic" src="hangman/hangman6.gif" alt="hangman">
+    </div>
+    <div id="clue">Press New Game to play!</div>
+    <div>
+        <input id="hguess" type="text" size="1" maxlength="1">
+        <button id="guessbutton" disabled="disabled">Guess</button>
+        <!-- <button id="guessbutton" onclick="guessLetter();" disabled="disabled">Guess</button> -->
+    </div>
+    <div id="newgamearea">
+        <!-- <button onclick="newGame();">New Game</button> -->
+        <button id="new_game">New Game</button>
+    </div>
+    <div id="guessstr"></div>
+</div>
+<footer>
+    <p>Web Programming, Spring 2025</p>
+    <p>Created by Jinyeong Kim</p>
+</footer>
+</body>
+</html>

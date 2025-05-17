@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Londrina+Shadow&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Alfa Slab One", "Quantico", "IBM Plex Sans KR",sans-serif;
+    box-sizing: border-box;
+    list-style: none;
+
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    font-family: inherit;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.select-screen {
+    width: 100%;
+    height: 100%;
+}
+
+.select-title {
+    font-size: 3.5em;
+    color: white;
+}
+
+.menu-item {
+    font-family: Quantico, sans-serif;
+    font-size: 3em;
+    color: white;
+    margin: 50px;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid white;
+    border-radius: 0.2em;
+    transition: 0.3s ease-in;
+}
+
+.menu-item:hover {
+    color: black;
+    background-color: white;
+    border: 1px solid black;
+    cursor: pointer;
+    transform: scale(1.2) translate(10%, -10%);
+}
+
+.select-screen {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.select-screen-left-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 40%;
+    height: 100%;
+    background-color: black;
+}
+
+.select-screen-right-container {
+    width: 60%;
+    height: 100%;
+    overflow: hidden;
+    background: linear-gradient(to left, transparent 10%, black 100%), url("img/bg1.jpg") top/cover;
+}
+
+.to-menu-button {
+    border: 1px solid white;
+    border-radius: 0.2em;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    padding: 1.5em;
+    transition: 0.3s ease-in;
+}
+
+.to-menu-button:hover {
+    background-color: white;
+    color: black;
+}
+
+.to-menu-button:active {
+    transition: none;
+    color: darkgrey;
+}

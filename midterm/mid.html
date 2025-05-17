@@ -1,0 +1,42 @@
+<!-- 202211286 김진영 -->
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="mid.css">
+	<script src="mid.js"></script>
+	<meta charset="utf-8">
+</head>
+<body>
+	<header>
+		김 진 영
+	</header>
+	<nav>
+		<div id="menuBox">
+			<input type="radio" name="menus" class="menu" id="menu1" checked=checked>
+			<label for="menu1">menu1</label>
+			<input type="radio" name="menus" class="menu" id="menu2">
+			<label for="menu2">menu2</label>
+			<input type="radio" name="menus" class="menu" id="menu3">
+			<label for="menu3">menu3</label>
+		</div>
+	</nav>
+	<div id="content">
+		<div class="story"> 
+			<h2>Story 1</h2>
+			<p class="center">테이블 생성하기 <button onclick="createTable()">생성</button></p><br>
+			<div id="showTable"></div><br>
+			<div class="center"><button onclick="move()">MOVE</button></div>
+		</div>
+		<div class="story">
+			<h2>Story 2</h2>
+		</div>
+		<div class="story">
+			<h2>Story 3</h2>
+		</div>
+	</div>
+	<footer>
+		웹 프로그래밍 중간고사
+	</footer>
+</body>
+</html>
