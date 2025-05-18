@@ -21,10 +21,6 @@ table {
     border-collapse: collapse;
 }
 
-.select-screen {
-    width: 100%;
-    height: 100%;
-}
 
 .select-title {
     font-size: 3.5rem;
@@ -33,14 +29,14 @@ table {
 
 .menu-item {
     font-family: Quantico, sans-serif;
-    font-size: 3em;
+    font-size: 3rem;
     color: white;
     margin: 50px;
     padding: 10px;
     text-align: center;
     border: 1px solid white;
-    border-radius: 0.2em;
-    transition: 0.3s ease-in;
+    border-radius: 0.2rem;
+    transition: 0.3s ease-out;
 }
 
 .menu-item:hover {
@@ -76,12 +72,13 @@ table {
 
 .to-menu-button {
     border: 1px solid white;
-    border-radius: 0.2em;
+    border-radius: 0.2rem;
     background-color: black;
     color: white;
     cursor: pointer;
-    padding: 1.5em;
+    padding: 1.5rem;
     transition: 0.3s ease-in;
+    font-size: 1.5rem;
 }
 
 .to-menu-button:hover {

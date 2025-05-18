@@ -3,28 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <title>Score</title>
-  <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="score.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="script.js"></script>
 </head>
 <body>
 
 <!--    점수 기록 화면-->
 <div id="score-screen">
-  <div id="score-screen-top-container">
-    <h1 id="score-title" class="select-title">Scores</h1>
-  </div>
-  <div id="score-screen-middle-container">
-    <table>
-      <tr>
-        <td>User name</td>
-        <td>Highest score</td>
-        <td>Longest survived time</td>
-        <td>Average survived time</td>
-      </tr>
-    </table>
-  </div>
-  <div class="footer">
-    <button class="to-menu-button">Back to menu</button>
-  </div>
+    <div id="score-screen-top-container">
+        <h1 id="score-title" class="select-title">Scores</h1>
+    </div>
+    <div id="score-screen-middle-container">
+        <table>
+            <thead>
+            <tr>
+                <th>User name</th>
+                <th>Highest score</th>
+                <th>Longest survived time</th>
+                <th>Average survived time</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="4" style="color: lightgrey;">상위 10개 기록만 표시 됩니다.</td>
+            </tr>
+            <tr>
+                <td>Player1</td>
+                <td>1200</td>
+                <td>00:15:30</td>
+                <td>00:10:45</td>
+            </tr>
+            <tr>
+                <td>Player2</td>
+                <td>950</td>
+                <td>00:12:10</td>
+                <td>00:08:20</td>
+            </tr>
+            <tr>
+                <td>Player3</td>
+                <td>1800</td>
+                <td>00:20:45</td>
+                <td>00:15:30</td>
+            </tr>
+            <tr>
+                <td>Player4</td>
+                <td>700</td>
+                <td>00:10:00</td>
+                <td>00:07:15</td>
+            </tr>
+            <tr>
+                <td>Player5</td>
+                <td>1200</td>
+                <td>00:15:30</td>
+                <td>00:10:45</td>
+            </tr>
+            <tr>
+                <td>Player6</td>
+                <td>950</td>
+                <td>00:12:10</td>
+                <td>00:08:20</td>
+            </tr>
+            <tr>
+                <td>Player7</td>
+                <td>1800</td>
+                <td>00:20:45</td>
+                <td>00:15:30</td>
+            </tr>
+            <tr>
+                <td>Player8</td>
+                <td>700</td>
+                <td>00:10:00</td>
+                <td>00:07:15</td>
+            </tr>
+            <tr>
+                <td>Player9</td>
+                <td>1200</td>
+                <td>00:15:30</td>
+                <td>00:10:45</td>
+            </tr>
+            <tr>
+                <td>Player10</td>
+                <td>950</td>
+                <td>00:12:10</td>
+                <td>00:08:20</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="footer">
+        <button class="to-menu-button">Back to menu</button>
+    </div>
 </div>
 
 </body>
