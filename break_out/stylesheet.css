@@ -5,7 +5,10 @@
     font-family: "Alfa Slab One", "Quantico", "IBM Plex Sans KR",sans-serif;
     box-sizing: border-box;
     list-style: none;
+}
 
+html {
+    font-size: 1vw;
 }
 
 a {
@@ -24,7 +27,7 @@ table {
 }
 
 .select-title {
-    font-size: 3.5em;
+    font-size: 3.5rem;
     color: white;
 }
 
