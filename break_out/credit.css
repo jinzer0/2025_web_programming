@@ -1,0 +1,30 @@
+#credit-screen {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    min-height: 1000px;
+    background-color: black;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#credit-title {
+    margin-top: 2%;
+    margin-left: 5%;
+    height: 20%;
+}
+
+#credit-screen-middle-container {
+    line-height: 1.2rem;
+    color: white;
+    height: 60%;
+    min-height: 1000px;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 2rem;
+    height: 20%;
+}
