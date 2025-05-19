@@ -1,0 +1,12 @@
+.menu-item {
+    font-size: 1.5rem;
+    width: 40%;
+}
+
+.footer {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
