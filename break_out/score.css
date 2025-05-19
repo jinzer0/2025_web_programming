@@ -1,75 +1,38 @@
-/*#score-screen {*/
-/*    background-color: black;*/
-/*    width: 100vw;*/
-/*    height: 100vh;*/
-
-/*    flex-direction: column;*/
-/*    justify-content: center;*/
-/*    position: relative;*/
-/*    align-items: center;*/
-/*}*/
-
-/*#score-screen-top-container {*/
-/*    */
-/*    top: 0;*/
-/*    left: 0;*/
-/*}*/
-
-
-/*#score-screen-middle-container {*/
-/*    color: white;*/
-/*}*/
-
-/*tr:nth-child(even) {*/
-/*    background-color: #585858;*/
-/*}*/
-
-/*tr:nth-child(odd) {*/
-/*    background-color: #181818;*/
-/*}*/
-
-/*table {*/
-/*    width: 80%;*/
-/*    min-height: 50%;*/
-/*}*/
-
-/*th, td {*/
-/*    text-align: center;*/
-/*    font-family: "Quantico", "IBM Plex Sans KR", sans-serif;*/
-/*    font-size: 2rem;*/
-/*}*/
-
 /*TODO: 브라우저 height resize시 table 이 title 침범함. min-width or min-height 설정하거나 알아서 해봐*/
 
 #score-screen {
     background-color: black;
     width: 100vw;
     height: 100vh;
+    min-height: 1000px;
     display: flex;
     flex-direction: column;
 }
 
 #score-screen-top-container {
+    height: 20%;
 }
 
 #score-title {
-    margin: 0;
+    margin-top: 3%;
+    margin-left: 5%;
     font-size: 3rem;
     color: white;
 }
 
 #score-screen-middle-container {
+    height: 60%;
     display: flex;
+    min-height: 580px;
     justify-content: center;
     align-items: center;
     color: white;
-    overflow: auto; /* 테이블이 화면을 넘지 않도록 스크롤 허용 */
 }
 
-table {
-    width: 80%;
-    min-height: 50%;
-}
+/*table {*/
+/*    width: 80%;*/
+/*    height: 100%;*/
+/*}*/
 
 th, td {
     text-align: center;
@@ -78,7 +41,7 @@ th, td {
 }
 
 tr:nth-child(even) {
-    background-color: #585858;
+    background-color: #282828;
 }
 
 tr:nth-child(odd) {
@@ -86,9 +49,9 @@ tr:nth-child(odd) {
 }
 
 .footer {
-    flex-shrink: 0; /* 버튼 영역이 줄어들지 않도록 설정 */
     display: flex;
     justify-content: center;
     align-items: flex-end;
     padding-bottom: 2rem;
+    height: 20%;
 }
