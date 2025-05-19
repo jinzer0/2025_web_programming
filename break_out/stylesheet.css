@@ -51,7 +51,7 @@ table {
     display: flex;
     width: 100vw;
     height: 100vh;
-    min-height: 1000px;
+    min-height: 950px;
     background-color: black;
 }
 
