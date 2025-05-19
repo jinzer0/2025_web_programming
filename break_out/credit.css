@@ -21,6 +21,14 @@
     min-height: 500px;
 }
 
+#credit-screen-middle-container > p {
+    font-family: "Quantico", "IBM Plex Sans KR", sans-serif;
+    font-size: 2rem;
+    line-height: 3.5rem;
+    margin: 0;
+    padding: 0 4rem 0 4rem;
+}
+
 #credit-screen-middle-container p {
     margin: 2rem 2rem 2rem 3rem;
 }
