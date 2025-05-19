@@ -1,24 +1,28 @@
-#credit-screen {
-    display: flex;
+#help-screen {
     width: 100vw;
     height: 100vh;
-    min-height: 950px;
     background-color: black;
+    min-height: 950px;
+    display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
-#credit-title {
-    margin-top: 2%;
-    margin-left: 5%;
+#help-screen-top-container {
     height: 20%;
 }
 
-#credit-screen-middle-container {
-    line-height: 1.2rem;
-    color: white;
+#help-screen-middle-container {
     height: 60%;
-    min-height: 1000px;
+    color: white;
+
+}
+
+.help-list {
+    font-size: 2rem;
+}
+
+.help-description {
+    font-size: 1.4rem;
 }
 
 .footer {
