@@ -38,7 +38,13 @@ th, td {
     text-align: center;
     font-family: "Quantico", "IBM Plex Sans KR", sans-serif;
     font-size: 2rem;
+    padding: 0 0.9rem 0 0.9rem;
 }
+
+th {
+    border-top: 0.5rem solid white;
+}
+
 
 tr:nth-child(even) {
     background-color: #282828;
@@ -52,6 +58,5 @@ tr:nth-child(odd) {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    padding-bottom: 2rem;
     height: 20%;
 }
