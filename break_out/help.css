@@ -11,10 +11,25 @@
     height: 20%;
 }
 
+#help-title {
+    margin-top: 3%;
+    margin-left: 5%;
+    font-size: 3rem;
+}
+
 #help-screen-middle-container {
     height: 60%;
     color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
+.help-list, .help-description {
+    text-align: left;
+    width: 80%;
+    min-width: 1000px;
 }
 
 .help-list {
@@ -23,6 +38,7 @@
 
 .help-description {
     font-size: 1.4rem;
+    margin-bottom: 1.4rem;
 }
 
 .footer {
