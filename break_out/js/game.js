@@ -167,8 +167,8 @@ function checkFloorCollision() {
         // 바닥에 충돌했을 때의 처리 (예: 게임 오버)
         console.log("Reached floor!");
         live -= 1;
-        // 공의 y 방향 속도를 반전시키거나, 게임 상태를 변경하는 등의 로직 추가
-        ball.dy = -ball.dy; // 간단하게는 공을 다시 위로 튕겨낼 수도 있습니다.
+        
+        ball.dy = -ball.dy;
     }
 }
 
