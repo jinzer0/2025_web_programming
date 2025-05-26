@@ -15,7 +15,7 @@ const brickCol = 5;
 const brickPadding = 10;
 const brickStartX = 30;
 const brickStartY = 30;
-const brickStrength = 1;
+const brickStrength = 3;
 let brickWidth;
 let brickHeight;
 
@@ -191,6 +191,7 @@ function checkCollision() { // Work in Progress
         isCollison = true;
     }
 
+    // 천장 벽 Collision 확인
     if (ball.y - ball.radius <= 0) {
         ball.dy = -ball.dy;
         isCollison = true;
@@ -210,7 +211,8 @@ function checkCollision() { // Work in Progress
                     if (x > 0 && y > 0) {
                         if (x < y) ball.dx = -ball.dx;
                         else ball.dy = -ball.dy;
-                        brick.status = false;
+                        if (brick.strength > 0) brick.strength--;
+                        if (brick.strength === 0) brick.status = false;
                         isCollison = true;
                         break;
                     }
