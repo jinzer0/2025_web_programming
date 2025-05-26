@@ -54,29 +54,29 @@ function drawBrick() {
 }
 
 function updateStatus() {
-    // 시간 계산
+    // 시간 계산 - 왼쪽 상단 경과 시간 표시용
     const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
     const hours = String(Math.floor(elapsedTime / 3600)).padStart(2, '0');
     const minutes = String(Math.floor((elapsedTime % 3600) / 60)).padStart(2, '0');
     const seconds = String(elapsedTime % 60).padStart(2, '0');
     time = `${hours}:${minutes}:${seconds}`;
 
-    // 점수 계산
+    // 점수 계산 - 왼쪽 상단 현재점수 표시용
     const remainingBricks = bricks.flat().filter(brick => brick.status).length;
     const totalBricks = brickRow * brickCol;
     const destroyedBricks = totalBricks - remainingBricks;
     score = destroyedBricks * 10;
 
-    // 모든 벽돌을 부쉈을 때 추가 점수
+    // 모든 벽돌을 부쉈을 때 추가 점수 - 경과 시간이 짧을수록 더 많은 추가점수
     if (remainingBricks === 0) {
         const bonus = Math.max(0, 1000 - elapsedTime); // 경과 시간이 짧을수록 보너스 점수
         score += bonus;
     }
 
-    // 화면에 표시
     console.log(`Score: ${score}, Time: ${time}, Remained live: ${live}`);
 }
 
+// 마우스 이동에 따라 패들 움직이기
 function mouseMoveHandler(e) {
     const rect = canvas.getBoundingClientRect();
     const relativeX = e.clientX - rect.left;
@@ -86,6 +86,7 @@ function mouseMoveHandler(e) {
     }
 }
 
+// 키보드 방향키 좌우로 패들 움직이기
 function keyboardMoveHandler(e) {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
         rightPressed = true;
@@ -97,6 +98,14 @@ function keyboardMoveHandler(e) {
         } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
             leftPressed = false;
         }
+    }
+
+    if (e.type === "keyup") {
+        if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+        if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+    } else if (e.type === "keydown") {
+        if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+        if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
     }
 }
 
@@ -132,7 +141,7 @@ function updateBall() {
     ball.x += ball.dx;
     ball.y += ball.dy;
 
-    // 벽에 충돌 시 방향 반전 (입사각 고려)
+    // 벽에 충돌 시 방향 반전 (입사각 고려) Work in Progress
     if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
         ball.dx = -ball.dx; // x축 반전
     }
@@ -140,7 +149,7 @@ function updateBall() {
         ball.dy = -ball.dy; // y축 반전
     }
 
-    // 패들에 충돌 시 입사각에 따른 반사각 계산
+    // 패들에 충돌 시 입사각에 따른 반사각 계산 Work in Progress
     if (ball.y + ball.radius > paddle.y && ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
         const hitPoint = (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
         const angle = hitPoint * (Math.PI / 3); // 최대 반사각 60도
@@ -162,53 +171,72 @@ function checkWin() {
     }
 }
 
-function checkFloorCollision() {
-    if (ball.y + ball.radius > canvas.height) {
-        // 바닥에 충돌했을 때의 처리 (예: 게임 오버)
-        console.log("Reached floor!");
-        live -= 1;
-        
-        ball.dy = -ball.dy;
-    }
-}
 
-function checkBrickCollision() {
-    for (let r = 0; r < brickRow; r++) {
-        for (let c = 0; c < brickCol; c++) {
-            const brick = bricks[r][c];
-            if (brick.status) {
-                // 충돌 지점 계산
-                const overlapX = Math.min(ball.x + ball.radius, brick.x + brickWidth) - Math.max(ball.x - ball.radius, brick.x);
-                const overlapY = Math.min(ball.y + ball.radius, brick.y + brickHeight) - Math.max(ball.y - ball.radius, brick.y);
-
-                if (overlapX > 0 && overlapY > 0) {
-                    // 충돌 위치에 따른 반사 처리
-                    if (overlapX < overlapY) {
-                        ball.dx = -ball.dx; // 좌우 충돌
-                    } else {
-                        ball.dy = -ball.dy; // 상하 충돌
-                    }
-
-                    brick.status = false;
-                    return; // 한 번의 충돌만 처리
-                }
-            }
-        }
-    }
-}
 
 function resetCanvas() {
     context.fillStyle = "black";
     context.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-function checkPaddleCollision() {
-    if (ball.y + ball.radius > paddle.y && ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
-        const hitPoint = (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
-        const angle = hitPoint * (Math.PI / 3); // 최대 반사각 60도
-        const speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2); // 속도 유지
+
+function checkCollision() { // Work in Progress
+    let isCollison = false;
+    // 좌우 벽 Collision 확인
+    if (ball.x + ball.radius >= canvas.width || ball.x - ball.radius <= 0) {
+        ball.dx = -ball.dx;
+        isCollison = true;
+    }
+
+    if (ball.y - ball.radius <= 0) {
+        ball.dy = -ball.dy;
+        isCollison = true;
+    }
+
+    // 벽돌과 Collision 확인
+    if (!isCollison) {
+        for (let i = 0; i < brickRow; i++) {
+            for (let j = 0; j < brickCol; j++) {
+                const brick = bricks[i][j];
+                if (brick.status) {
+                    let x = Math.min(ball.x + ball.radius, brick.x + brickWidth) -
+                        Math.max(ball.x - ball.radius, brick.x);
+                    let y = Math.min(ball.y + ball.radius, brick.y + brickHeight) -
+                        Math.max(ball.y - ball.radius, brick.y);
+
+                    if (x > 0 && y > 0) {
+                        if (x < y) ball.dx = -ball.dx;
+                        else ball.dy = -ball.dy;
+                        brick.status = false;
+                        isCollison = true;
+                        break;
+                    }
+                }
+            }
+            if (isCollison) break;
+        }
+    }
+
+    // 바닥 벽과 부딪혔을 때 목숨 -1 Work in Progress
+    if (!isCollison && ball.y + ball.radius > canvas.height) {
+        live--;
+        if (live <= 0) {
+            isRunning = false;
+            return;
+        }
+        ball.x = canvas.width / 2;
+        ball.y = canvas.height - 30;
+        ball.dx = 7;
+        ball.dy = -5;
+        isCollison = true;
+    }
+
+    // 패들과 부딪혔을 때 각도 속도 Work in Progress
+    if (!isCollison && ball.y + ball.radius > paddle.y && ball.y - ball.radius < paddle.y + paddle.height && ball.x + ball.radius > paddle.x && ball.x - ball.radius < paddle.x + paddle.width) {
+        let hitPoint = (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
+        let angle = hitPoint * (Math.PI / 3);
+        let speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
         ball.dx = speed * Math.sin(angle);
-        ball.dy = -speed * Math.cos(angle);
+        ball.dy = -Math.abs(speed * Math.cos(angle));
     }
 }
 
@@ -230,10 +258,8 @@ function setStatus() {
 }
 
 function updateGame() {
-    checkBrickCollision();
-    checkFloorCollision();
-    checkPaddleCollision();
     updatePaddle();
+    checkCollision();
     updateBall();
     updateStatus();
     setStatus();
@@ -247,7 +273,7 @@ function drawGame() {
     drawPaddle();
 }
 
-function gameLoop() {
+function gameLoop() { // Game 재귀적 실행
     if (!isRunning) return;
     updateGame();
     drawGame();
@@ -258,7 +284,7 @@ function init() {
     $(document).mousemove(mouseMoveHandler);
     $(document).keydown(keyboardMoveHandler);
     $(document).keyup(keyboardMoveHandler);
-    
+
     canvas = document.getElementById("canvas");
     context = canvas.getContext("2d");
     canvas.width = $("#game-screen").width();
@@ -288,7 +314,7 @@ function init() {
         width: canvas.width * 0.15,
         x: (canvas.width - canvas.width * 0.15) / 2,
         y: canvas.height - canvas.height * 0.03 - 10,
-        speed: 5,
+        speed: 20,
         src: "img/img.jpg",
         color: "blue",
     }
