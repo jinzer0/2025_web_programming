@@ -137,28 +137,32 @@ function updatePaddle() {
 }
 
 
+// function updateBall() {
+//     ball.x += ball.dx;
+//     ball.y += ball.dy;
+//
+//     // 벽에 충돌 시 방향 반전 (입사각 고려) Work in Progress
+//     if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+//         ball.dx = -ball.dx; // x축 반전
+//     }
+//     if (ball.y - ball.radius < 0) {
+//         ball.dy = -ball.dy; // y축 반전
+//     }
+//
+//     // 패들에 충돌 시 입사각에 따른 반사각 계산 Work in Progress
+//     if (ball.y + ball.radius > paddle.y && ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+//         const hitPoint = (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
+//         const angle = hitPoint * (Math.PI / 3); // 최대 반사각 60도
+//         const speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2); // 속도 유지
+//         ball.dx = speed * Math.sin(angle);
+//         ball.dy = -speed * Math.cos(angle);
+//     }
+// }
+
 function updateBall() {
     ball.x += ball.dx;
     ball.y += ball.dy;
-
-    // 벽에 충돌 시 방향 반전 (입사각 고려) Work in Progress
-    if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
-        ball.dx = -ball.dx; // x축 반전
-    }
-    if (ball.y - ball.radius < 0) {
-        ball.dy = -ball.dy; // y축 반전
-    }
-
-    // 패들에 충돌 시 입사각에 따른 반사각 계산 Work in Progress
-    if (ball.y + ball.radius > paddle.y && ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
-        const hitPoint = (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
-        const angle = hitPoint * (Math.PI / 3); // 최대 반사각 60도
-        const speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2); // 속도 유지
-        ball.dx = speed * Math.sin(angle);
-        ball.dy = -speed * Math.cos(angle);
-    }
 }
-
 function checkWin() {
     if (live === 0) {
         console.log("Player lose!");
