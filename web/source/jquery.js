@@ -126,6 +126,43 @@ $(document).ready(function() {
     // slideDown() and slideUp()
 
 
+
+    // ajax 실습 1
+    $("#getText1").on("click", function() {
+        $("#textbox").text("글자 입력 테스트");
+        /*
+        let req = $.ajax("data.json");
+        
+        or
+
+        let req = $.ajax("data.txt");
+        let data_json = JSON.parse(data);
+
+        or
+
+        let req = $.ajax({url: "data.txt", dataType: "json"});
+        */
+        let req = $.ajax({
+            url: "data.txt",
+            dataType: "json"
+        });
+        req.done(function(data, status) {
+            let table = $("<table/>");
+            let head = $("<tr/>").append($("<th/>").text("이름")).append($("<th/>").text("아이디")).append($("<th/>").text("학과")).append($("<th/>").text("수강과목"));
+            table.append(head);
+            for (let i = 0; i < data.length; i++) {
+                let name = $("<td/>").text(data[i]["name"]);
+                let id = $("<td/>").text(data[i]["id"]);
+                let department = $("<td/>").text(data[i]["department"]);
+                let cl = $("<td/>").text(data[i]["class"].join(", "));
+                let tr = $("<tr/>").append(name).append(id).append(department).append(cl);
+                table.append(tr);
+            }
+            $("#textbox").append(table);
+        });
+    });
+
+
 });
 
 
@@ -154,16 +191,44 @@ $(function() {
         let dl = $(this);
         let alldd = dl.find("dd");
         let alldt = dl.find("dt");
-        alldd.hide();
-        alldt.css("cursor", "pointer");
 
+        function closeAll() {
+            alldd.addClass("closed");
+            alldt.addClass("closed");
+        }
+
+        function open(dt, dd) {
+            dt.removeClass("closed");
+            dd.removeClass("closed");
+        }
+        closeAll();
         alldt.click(function() {
-            alldt.css("cursor", "pointer");
-            alldd.slideUp("slow");
-            $(this).next().slideDown("slow");
-            $(this).css("cursor", "default");
-        });
+            let dt = $(this);
+            let dd = dt.next();
+            closeAll();
+            open(dt, dd);
+        })
 
 
-    })
-})
+    });
+
+    // 실습 슬라이드 쇼
+    $(".slideshow").each(function() {
+        let container = $(this);
+        function switchImg() {
+            let imgs = container.find("img");
+            let first = imgs.eq(1);
+            let second = imgs.eq(2);
+            first.appendTo(container).fadeOut(2000);
+            second.fadeIn();
+        }
+        function startTimer() {timer = setInterval(switchImg, interval);}
+        function stopTimer() {clearInterval(timer);}
+        container.hover(stopTimer, startTimer);
+        startTimer();
+    });
+});
+
+// 실습 슬라이드쇼
+let interval = 3000;
+let timer;
