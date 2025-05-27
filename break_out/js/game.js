@@ -301,11 +301,11 @@ function init() {
     leftPressed = false;
     ball = {
         x: canvas.width / 2,
-        y: canvas.height - 30,
+        y: canvas.height / 2,
         radius: canvas.width * 0.015,
         src: "img/img.jpg",
         dx: 7,
-        dy: -5,
+        dy: -7,
         color: "red",
     }
 
@@ -326,9 +326,6 @@ function init() {
     }
 
     bricks = [];
-    updatePaddle();
-    updateBall();
     setBrick();
-    updateStatus();
 }
 
