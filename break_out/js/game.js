@@ -178,8 +178,12 @@ function checkWin() {
 
 
 function resetCanvas() {
+    context.beginPath();
     context.fillStyle = "black";
     context.fillRect(0, 0, canvas.width, canvas.height);
+    context.strokeStyle = "white";
+    context.strokeRect(0, 0, canvas.width, canvas.height);
+    context.closePath();
 }
 
 
