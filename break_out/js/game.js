@@ -72,8 +72,6 @@ function updateStatus() {
         const bonus = Math.max(0, 1000 - elapsedTime); // 경과 시간이 짧을수록 보너스 점수
         score += bonus;
     }
-
-    console.log(`Score: ${score}, Time: ${time}, Remained live: ${live}`);
 }
 
 // 마우스 이동에 따라 패들 움직이기
@@ -229,14 +227,10 @@ function checkCollision() { // Work in Progress
     // 바닥 벽과 부딪혔을 때 목숨 -1 Work in Progress
     if (!isCollison && ball.y + ball.radius > canvas.height) {
         live--;
-        if (live <= 0) {
-            isRunning = false;
-            return;
-        }
         ball.x = canvas.width / 2;
-        ball.y = canvas.height - 30;
+        ball.y = canvas.height / 2;
         ball.dx = 7;
-        ball.dy = -5;
+        ball.dy = -7;
         isCollison = true;
     }
 
@@ -265,6 +259,11 @@ function setStatus() {
         $("#game-info>span:nth-of-type(3)").text(`Remained live : ${live}`);
         prevStatus.live = live;
     }
+}
+
+function Logger() {
+    console.log(`ball dx: ${ball.dx}`);
+    console.log(`ball dy: ${ball.dy}`);
 }
 
 function updateGame() {
@@ -331,5 +330,6 @@ function init() {
 
     bricks = [];
     setBrick();
+    setInterval(Logger, 1000);
 }
 
