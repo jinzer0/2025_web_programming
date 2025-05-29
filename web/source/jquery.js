@@ -186,6 +186,10 @@ function update(j) {
 }
 
 // jquery 실습 13주차
+
+// 실습 슬라이드쇼
+let interval = 3000;
+let timer;
 $(function() {
     $(".accordion").each(function() {
         let dl = $(this);
@@ -229,6 +233,4 @@ $(function() {
     });
 });
 
-// 실습 슬라이드쇼
-let interval = 3000;
-let timer;
+
