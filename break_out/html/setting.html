@@ -7,25 +7,101 @@
     <link rel="stylesheet" href="../css/setting.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../js/script.js"></script>
+    <script src="../js/setting.js"></script>
 </head>
 <body>
-<!--    설정 화면-->
+<!--설정 화면-->
 <div id="setting-screen" class="select-screen">
     <div id="setting-screen-left-container" class="select-screen-left-container">
         <h1 id="setting-title" class="select-title">Settings</h1>
         <div class="menu-list">
-            <h3 class="menu-item">Enable/Disable Special Item</h3>
-            <h3 class="menu-item">Select In-game Background Image</h3>
-            <h3 class="menu-item">Select Paddle</h3>
-            <h3 class="menu-item">Select Background Music</h3>
-            <h3 class="menu-item">Select Paddle Control</h3>
-            <h3 class="menu-item">Reset Game</h3>
+            <h3 class="menu-item" id="special-item">Enable/Disable Special Item</h3>
+            <h3 class="menu-item" id="background-image">Select In-game Background Image</h3>
+            <h3 class="menu-item" id="paddle">Change Textures</h3>
+            <h3 class="menu-item" id="music">Select Background Music</h3>
+            <h3 class="menu-item" id="control">Select Paddle Control</h3>
+            <h3 class="menu-item" id="reset">Reset Game</h3>
         </div>
         <div class="footer">
             <button class="to-menu-button">Back to menu</button>
         </div>
     </div>
-    <div id="setting-screen-right-container" class="select-screen-right-container"></div>
+    <div id="setting-screen-right-container" class="select-screen-right-container">
+        <div class="setting-detail" id="special-item-setting">
+            <h1>Special Item</h1>
+            <p>스페셜 아이템 사용 여부를 결정합니다.</p>
+            <div class="toggle-buttons">
+                <button id="special-on" class="toggle-button">ON</button>
+                <button id="special-off" class="toggle-button">OFF</button>
+            </div>
+            <p id="special-status" class="status-text"></p>
+        </div>
+        <div class="setting-detail" id="background-image-setting">
+            <h1>Background Image</h1>
+            <p>게임 내 배경 이미지를 선택합니다</p>
+            <div class="background-image-options">
+                <img src="../img/bg1.jpg" class="bg-option" data-id="bg1" alt="BG 1">
+                <img src="../img/bg2.jpg" class="bg-option" data-id="bg2" alt="BG 2">
+                <img src="../img/bg3.jpg" class="bg-option" data-id="bg3" alt="BG 3">
+            </div>
+            <p style="margin-top: 30px;">배경 불투명도 (0.1 ~ 1.0)</p>
+            <input type="range" id="opacity-slider" min="0.1" max="1.0" step="0.1" value="1.0">
+            <p id="opacity-value" class="status-text">현재: 1.0</p>
+        </div>
+        <div class="setting-detail" id="paddle-setting">
+            <h1>Change Textures</h1>
+            <h3>Choose Your Paddle</h3>
+            <div class="paddle-options">
+                <img src="../img/bat.jpg" class="paddle-option" data-id="bat" alt="Bat">
+                <img src="../img/nightstick.jpg" class="paddle-option" data-id="nightstick" alt="Bag">
+                <img src="../img/golfclub.jpg" class="paddle-option" data-id="golfclub" alt="Golf">
+            </div>
+            <p id="paddle-status" class="status-text"></p>
+
+            <h3>Choose Your Ball</h3>
+            <div class="ball-options">
+                <img src="../img/grenade.jpg" class="ball-option" data-id="grenade" alt="grenade">
+                <img src="../img/stickybomb.jpg" class="ball-option" data-id="stickybomb" alt="stickybomb">
+                <img src="../img/snowball.jpg" class="ball-option" data-id="snowball" alt="snowball">
+            </div>
+            <p id="ball-status" class="status-text"></p>
+
+            <h3>Choose Your Brick</h3>
+            <div class="brick-options">
+                <img src="../img/money.jpg" class="brick-option" data-id="money" alt="Concrete Brick">
+                <img src="../img/goldbar.jpg" class="brick-option" data-id="goldbar" alt="Safe Box Brick">
+                <img src="../img/brick_sign.png" class="brick-option" data-id="sign" alt="Street Sign Brick">
+            </div>
+            <p id="brick-status" class="status-text"></p>
+        </div>
+        <div class="setting-detail" id="music-setting">
+            <h1>Select Music</h1>
+            <p>게임에서 재생될 배경 음악을 선택하세요.</p>
+            <div class="music-options">
+                <div class="music-option" data-id="1">1</div>
+                <div class="music-option" data-id="2">2</div>
+                <div class="music-option" data-id="3">3</div>
+                <div class="music-option" data-id="none">No Music</div>
+            </div>
+        </div>
+        <div class="setting-detail" id="control-setting">
+            <h1>Control</h1>
+            <p>패들을 조작할 방식을 선택하세요.</p>
+            <div class="control-options">
+                <div class="control-option" data-id="mouse">🖱️ 마우스</div>
+                <div class="control-option" data-id="keyboard">⌨️ 키보드</div>
+            </div>
+            <p id="control-status" class="status-text"></p>
+        </div>
+        <div class="setting-detail" id="reset-confirm">
+            <h1>Are You Sure?</h1>
+            <h1 style="color: red;">⚠️ WARNING!</h1>
+            <p style="font-size: 1.2rem; color: white;">리셋하시면 게임에 저장된 모든 데이터가 삭제됩니다.</p>
+            <div style="margin-top: 30px;">
+                <button id="reset-button">RESET</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>

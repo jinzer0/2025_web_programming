@@ -1,3 +1,174 @@
 .menu-item {
     font-size: 1.5rem;
 }
+
+.popup {
+    position: absolute;
+    left: 45%;
+    top: 33%;
+    color:white;
+    background-color: black;
+    border: 2px solid white;
+    padding: 15px 10px;
+    border-radius: 0.2rem;
+    width: 50vw;
+    height: 70vh;
+    text-align: center;
+}
+
+.setting-detail {
+    display: none;
+}
+
+.setting-detail h1 {
+    margin-bottom: 30px;
+}
+
+.setting-detail p {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.toggle-buttons {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.toggle-button {
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    border-radius: 0.4rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.toggle-button:hover {
+    background-color: #444;
+    color: white;
+}
+
+.status-text {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: lightgreen;
+}
+
+.background-image-options {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.bg-option {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.bg-option.selected {
+    border-color: yellow;
+    box-shadow: 0 0 10px 3px gold;
+}
+
+#opacity-slider {
+    width: 80%;
+    margin-top: 10px;
+}
+
+.paddle-options, .ball-options, .brick-options {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 10px 0 20px 0;
+}
+
+.paddle-option, .ball-option, .brick-option {
+    width: 100px;
+    height: 40px;
+    object-fit: contain;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: 0.3s;
+    line-height: 40px;
+}
+
+.paddle-option.selected,
+.ball-option.selected,
+.brick-option.selected {
+    border-color: dodgerblue;
+    box-shadow: 0 0 10px 3px skyblue;
+}
+
+.music-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.music-option {
+    background-color: #222;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    border: 2px solid transparent;
+    font-size: 1.2rem;
+    transition: 0.2s;
+}
+
+.music-option:hover {
+    background-color: #333;
+}
+
+.music-option.selected {
+    border-color: limegreen;
+    background-color: #444;
+    box-shadow: 0 0 10px 2px limegreen;
+}
+
+.control-options {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.control-option {
+    background-color: #222;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    border: 2px solid transparent;
+    font-size: 1.2rem;
+    transition: 0.2s;
+}
+
+.control-option:hover {
+    background-color: #333;
+}
+
+.control-option.selected {
+    border-color: orange;
+    background-color: #444;
+    box-shadow: 0 0 10px 2px orange;
+}
+
+#reset-button {
+    background-color: red;
+    color: white;
+    padding: 10px 30px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
