@@ -128,7 +128,7 @@ $(document).ready(function() {
 
 
     // ajax 실습 1
-    $("#getText1").on("click", function() {
+    $("#getText2").on("click", function() {
         $("#textbox").text("글자 입력 테스트");
         /*
         let req = $.ajax("data.json");
@@ -162,6 +162,59 @@ $(document).ready(function() {
         });
     });
 
+    $("#getText1").on("click", function() {
+        $("#textbox").text("글자 입력 테스트");
+        /*
+        let req = $.ajax("data.json");
+        
+        or
+
+        let req = $.ajax("data.txt");
+        let data_json = JSON.parse(data);
+
+        or
+
+        let req = $.ajax({url: "data.txt", dataType: "json"});
+        */
+        $("#textbox").append("<br>");
+        let req = $.ajax({
+            url: "data.txt",
+            dataType: "json"
+        });
+        req.done(function(data, status) {
+            for(let i = 0; i < data.length; i++) {
+                $("#textbox").append(data[i]["name"] + "<br>");
+            }
+        });
+    });
+
+    // ajax 실습 2
+    let res = $.ajax({
+        url: "/rss",
+        dataType: "xml"
+    })
+    .done(function(data) {
+        let items = $(data).find("entry");
+        if (items.length > 0) {
+            items = items.slice(0, 5);
+            let uTag = $("<ul/>");
+            items.each(function() {
+                let lTag = $("<li/>");
+                let aTag = $("<a/>");
+                let item = $(this);
+                aTag.attr({
+                    "href": item.find("link").attr("href"),
+                    "target": "_blank"
+                }).text(item.find("title").text());
+                lTag.append(aTag);
+                uTag.append(lTag);
+            }
+            );
+            $("#news").html(uTag);
+        }
+    })
+    .fail(function(jqXHR, textStatus) { alert("failed: " + textStatus); });
+
 
 });
 
@@ -189,7 +242,9 @@ function update(j) {
 
 // 실습 슬라이드쇼
 let interval = 3000;
-let timer;
+let timer_1;
+let timer_2;
+let timer_3;
 $(function() {
     $(".accordion").each(function() {
         let dl = $(this);
@@ -217,18 +272,51 @@ $(function() {
     });
 
     // 실습 슬라이드 쇼
-    $(".slideshow").each(function() {
+    $(".slideshow:nth-of-type(1)").each(function() {
         let container = $(this);
         function switchImg() {
             let imgs = container.find("img");
-            let first = imgs.eq(1);
-            let second = imgs.eq(2);
+            let first = imgs.eq(0);
+            let second = imgs.eq(1);
             first.appendTo(container).fadeOut(2000);
             second.fadeIn();
         }
-        function startTimer() {timer = setInterval(switchImg, interval);}
-        function stopTimer() {clearInterval(timer);}
-        container.hover(stopTimer, startTimer);
+        function startTimer() {timer_1 = setInterval(switchImg, interval);}
+        function stopTimer() {clearInterval(timer_1);}
+        container.mouseenter(stopTimer);
+        container.mouseleave(startTimer);
+        startTimer();
+    });
+
+    $(".slideshow:nth-of-type(2)").each(function() {
+        let container = $(this);
+        function switchImg() {
+            let imgs = container.find("img");
+            let first = imgs.eq(0);
+            let second = imgs.eq(1);
+            first.appendTo(container).fadeOut(2000);
+            second.fadeIn();
+        }
+        function startTimer() {timer_2 = setInterval(switchImg, interval);}
+        function stopTimer() {clearInterval(timer_2);}
+        container.mouseenter(stopTimer);
+        container.mouseleave(startTimer);
+        startTimer();
+    });
+
+    $(".slideshow:nth-of-type(3)").each(function() {
+        let container = $(this);
+        function switchImg() {
+            let imgs = container.find("img");
+            let first = imgs.eq(0);
+            let second = imgs.eq(1);
+            first.appendTo(container).fadeOut(2000);
+            second.fadeIn();
+        }
+        function startTimer() {timer_3 = setInterval(switchImg, interval);}
+        function stopTimer() {clearInterval(timer_3);}
+        container.mouseenter(stopTimer);
+        container.mouseleave(startTimer);
         startTimer();
     });
 });

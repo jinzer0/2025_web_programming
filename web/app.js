@@ -2,11 +2,18 @@ let express = require("express");
 let http = require("http");
 let path = require("path");
 let static_s = require("serve-static");
+const https = require("https");
+const fs = require("fs");
+
+const options = {
+    key: fs.readFileSync("cert.key"),
+    cert: fs.readFileSync("cert.crt"),      
+};
 
 let app = express();
 let router = express.Router();
 app.set("port", process.env.PORT || 8080);
-app.set("host", "127.0.0.1");
+app.set("host", "172.16.164.92");
 app.use(static_s(__dirname));
 
 app.use(express.urlencoded());
@@ -32,6 +39,21 @@ router.route("/").get(function(req, res) {
 });
 
 
+router.route("/rss").get(function(req, res) {
+    console.log("rss daa requested");
+    let feed = "https://d2.naver.com/d2.atom";
+    https.get(feed, function(httpres) {
+        let rss_res = "";
+        httpres.on("data", function(chunk) {rss_res += chunk;});
+        httpres.on("end", function() {
+            res.send(rss_res);
+            console.log("rss response completed");
+            res.end();
+        });
+    });
+});
+
+
 
 // 실습 1
 // http://localhost:8080/routetest 주소로 접근시 http://www.google.com으로 redirect
@@ -48,6 +70,11 @@ app.use((req, res) => {
 
 
 http.createServer(app).listen(app.get("port"), app.get("host"), () => {
-    console.log("Express server running at " + app.get("port") + app.get("host"));
+    console.log("Express server running at " + app.get("port") + " - " + app.get("host"));
 });
 
+const PORT = 8000;
+https.createServer(options, app).listen(PORT, app.get("host"), () => {
+        console.log("Express HTTPS server running at " + app.get("port") + " - " + app.get("hostname"));
+
+});
