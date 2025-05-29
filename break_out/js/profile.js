@@ -52,8 +52,11 @@ $(document).ready(function () {
         }
 
         const name = prompt("새 프로필 이름을 입력하세요:");
+        // profiles: [ { name: "홍길동", level: 0, current_level: 1, is_playing: true, highest_score: 1232, longest_survived: "00:13:33", average_survived: "00:05:21", play_count: 1}, ... ]
+
         if (name && name.trim()) {
-            profiles.push(name.trim());
+            let profile = {name: name.trim(), level: 0, current_level: 0, is_playing: false, higest_score: 0, longest_survived: "00:00:00", average_survived: "00:00:00", play_count: 0};
+            profiles.push(profile);
             saveProfiles(profiles);
             loadProfiles();
         }
