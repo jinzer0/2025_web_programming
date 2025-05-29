@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/profile.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../js/script.js"></script>
+    <script src="../js/profile.js"></script>
 </head>
 <body>
 <!--    프로필 선택/생성/삭제 화면-->
@@ -15,6 +16,8 @@
         <h1 id="profile-title" class="select-title">Select profile</h1>
         <div class="menu-list">
             <h3 class="menu-item">Delete Profile</h3>
+<!--            TODO: Delete Profile 클릭시 "삭제할 프로필을 선택하세요.", "Delete Profile 버튼을 다시 누르면 되돌아갑니다" 등 문구 display-->
+
             <h3 class="menu-item">Create New Profile</h3>
         </div>
 
@@ -24,17 +27,6 @@
             <Button class="profile-item">Profile 1</Button>
             <Button class="profile-item">Profile 2</Button>
             <Button class="profile-item">Profile 3</Button>
-            <Button class="profile-item">Profile 4</Button>
-            <Button class="profile-item">Profile 5</Button>
-            <Button class="profile-item">Profile 6</Button>
-            <Button class="profile-item">Profile 7</Button>
-            <Button class="profile-item">Profile 8</Button>
-            <Button class="profile-item">Profile 9</Button>
-        </div>
-        <div id="pagination-container">
-            <button id="prev-profile">Prev</button>
-            <p>1</p>
-            <button id="next-profile">Next</button>
         </div>
     </div>
     <div class="footer">
