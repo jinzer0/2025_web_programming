@@ -23,13 +23,355 @@ const storage = window.localStorage;
 let special_item, background_image, background_opacity, paddle_image, ball_image, brick_image, music, control;
 let profile;
 let currentLevel = 0;
-// TODO: 특수 아이템, 적용 및 구현
-// TODO: 특수 아이템 활성화시 icon과 description 3초간 display
+// TODO: 특수 아이템, 적용 및 구현 - DONE!
+// TODO: 특수 아이템 활성화시 icon과 description 3초간 display - DONE!
 // TODO: 난이도에 따라 벽돌 개수, 크기 및 brickStrength 조정
 
-let it = [
-    {name: "item1", description: "아이템 설명", icon: "img/item1.jpg", is_enabled: true},
-];
+
+// 특수 아이템 객체
+const SPECIAL_ITEMS = {
+    BIG_PADDLE: {
+        name: "Big Paddle",
+        description: "공구 상자 - 패들 크기 일시적 증가",
+        color: "#32CD32",
+        duration: 3000,
+        effect: () => {
+            if (!activeEffects.bigPaddle.active) {
+                activeEffects.bigPaddle.active = true;
+                paddle.width *= 1.5;
+                if (paddle.x + paddle.width > canvas.width) {
+                    paddle.x = canvas.width - paddle.width;
+                }
+                activeEffects.bigPaddle.timer = setTimeout(() => {
+                    if (activeEffects.bigPaddle.active) {
+                        paddle.width /= 1.5;
+                        activeEffects.bigPaddle.active = false;
+                        activeEffects.bigPaddle.timer = null;
+                    }
+                }, 3000);
+            } else {
+                // 이미 활성화 상태면 타이머 리셋 - 다시 시작
+                clearTimeout(activeEffects.bigPaddle.timer);
+                activeEffects.bigPaddle.timer = setTimeout(() => {
+                    if (activeEffects.bigPaddle.active) {
+                        paddle.width /= 1.5;
+                        activeEffects.bigPaddle.active = false;
+                        activeEffects.bigPaddle.timer = null;
+                    }
+                }, 3000);
+            }
+        }
+    },
+    EXTRA_LIFE: {
+        name: "Extra Life",
+        description: "방탄 조끼 - 목숨 1 추가",
+        color: "#FF69B4",
+        effect: () => {
+            live++;
+        }
+    },
+    DESTROY_AROUND: {
+        name: "Destroy Around",
+        description: "폭탄 - 주변 벽돌 파괴",
+        color: "#FF4500",
+        effect: (brickI, brickJ) => {
+            const directions = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]; // 해당 벽돌 기준 모든 방향 1칸씩
+            directions.forEach(([di, dj]) => {
+                const ni = brickI + di;
+                const nj = brickJ + dj;
+                if (ni >= 0 && ni < brickRow && nj >= 0 && nj < brickCol && bricks[ni][nj].status) {
+                    bricks[ni][nj].status = false;
+                }
+            });
+        }
+    },
+    SPEED_UP: {
+        name: "Speed Up",
+        description: "공 속도 일시적 증가",
+        color: "#FFD700",
+        duration: 3000,
+        effect: () => {
+            if (!activeEffects.speedUp.active) {
+                activeEffects.speedUp.active = true;
+                activeEffects.speedUp.multiplier = 1.5;
+                ball.dx *= activeEffects.speedUp.multiplier;
+                ball.dy *= activeEffects.speedUp.multiplier;
+                activeEffects.speedUp.timer = setTimeout(() => {
+                    if (activeEffects.speedUp.active) {
+                        ball.dx /= activeEffects.speedUp.multiplier;
+                        ball.dy /= activeEffects.speedUp.multiplier;
+                        activeEffects.speedUp.active = false;
+                        activeEffects.speedUp.timer = null;
+                    }
+                }, 3000);
+            } else {
+                clearTimeout(activeEffects.speedUp.timer);
+                activeEffects.speedUp.timer = setTimeout(() => {
+                    if (activeEffects.speedUp.active) {
+                        ball.dx /= activeEffects.speedUp.multiplier;
+                        ball.dy /= activeEffects.speedUp.multiplier;
+                        activeEffects.speedUp.active = false;
+                        activeEffects.speedUp.timer = null;
+                    }
+                }, 3000);
+            }
+        }
+    },
+    RESTORE_BRICKS: {
+        name: "Restore Bricks",
+        description: "수배 레벨 증가 - 벽돌 추가(부순 벽돌 중 일부 재생성)",
+        color: "#8B4513",
+        effect: () => {
+            const destroyedBricks = [];
+            for (let i = 0; i < brickRow; i++) {
+                for (let j = 0; j < brickCol; j++) {
+                    if (!bricks[i][j].status) {
+                        destroyedBricks.push([i, j]);
+                    }
+                }
+            }
+
+            // 파괴된 벽돌 중 50% 랜덤 추가
+            const restoreCount = Math.min(Math.ceil(destroyedBricks.length * 0.5), 3);
+            for (let k = 0; k < restoreCount; k++) {
+                if (destroyedBricks.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * destroyedBricks.length);
+                    const [i, j] = destroyedBricks.splice(randomIndex, 1)[0];
+                    bricks[i][j].status = true;
+                    bricks[i][j].strength = brickStrength;
+                    if (Math.random() < 0.25) {
+                        const itemKeys = Object.keys(SPECIAL_ITEMS);
+                        bricks[i][j].specialItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
+                    } else {
+                        bricks[i][j].specialItem = null;
+                    }
+                }
+            }
+        }
+    },
+    SMALL_PADDLE: {
+        name: "Small Paddle",
+        description: "고장난 총 - 패들 크기 일시적 감소",
+        color: "#DC143C",
+        duration: 3000,
+        effect: () => {
+            if (!activeEffects.smallPaddle.active) {
+                activeEffects.smallPaddle.active = true;
+                activeEffects.smallPaddle.multiplier = 0.6;
+                paddle.width *= activeEffects.smallPaddle.multiplier;
+                activeEffects.smallPaddle.timer = setTimeout(() => {
+                    if (activeEffects.smallPaddle.active) {
+                        paddle.width /= activeEffects.smallPaddle.multiplier;
+                        activeEffects.smallPaddle.active = false;
+                        activeEffects.smallPaddle.timer = null;
+                    }
+                }, 3000);
+            } else {
+                clearTimeout(activeEffects.smallPaddle.timer);
+                activeEffects.smallPaddle.timer = setTimeout(() => {
+                    if (activeEffects.smallPaddle.active) {
+                        paddle.width /= activeEffects.smallPaddle.multiplier;
+                        activeEffects.smallPaddle.active = false;
+                        activeEffects.smallPaddle.timer = null;
+                    }
+                }, 3000);
+            }
+        }
+    },
+    REVERSE_CONTROL: {
+        name: "Reverse Control",
+        description: "혼란 - 패틀 움직임 일시적 반전(입력 반전)",
+        color: "#FF6347",
+        duration: 3000,
+        effect: () => {
+            if (!activeEffects.reverseControl.active) {
+                activeEffects.reverseControl.active = true;
+                activeEffects.reverseControl.timer = setTimeout(() => {
+                    paddle.speed = Math.abs(paddle.speed);
+                    activeEffects.reverseControl.active = false;
+                    activeEffects.reverseControl.timer = null;
+                }, 3000);
+            } else {
+                clearTimeout(activeEffects.reverseControl.timer);
+                activeEffects.reverseControl.timer = setTimeout(() => {
+                    activeEffects.reverseControl.active = false;
+                    activeEffects.reverseControl.timer = null;
+                }, 3000);
+            }
+        }
+    },
+    SLOW_CONTROL: {
+        name: "Slow Control",
+        description: "해킹장치 오류 - 패들 움직임 일시적 둔화(입력 딜레이)",
+        color: "#4B0082",
+        duration: 3000,
+        effect: () => {
+            if (!activeEffects.slowControl.active) {
+                activeEffects.slowControl.active = true;
+                controlDelay = 200;
+                activeEffects.slowControl.timer = setTimeout(() => {
+                    activeEffects.slowControl.active = false;
+                    controlDelay = 0;
+                    activeEffects.slowControl.timer = null;
+                }, 3000);
+            } else {
+                clearTimeout(activeEffects.slowControl.timer);
+                activeEffects.slowControl.timer = setTimeout(() => {
+                    activeEffects.slowControl.active = false;
+                    controlDelay = 0;
+                    activeEffects.slowControl.timer = null;
+                }, 3000);
+            }
+        }
+    },
+    SCREEN_FLICKER: {
+        name: "Screen Flicker",
+        description: "정전 - 화면 일시적 깜빡거림",
+        color: "#800080",
+        duration: 3000,
+        effect: () => {
+            if (!activeEffects.screenFlicker.active) {
+                activeEffects.screenFlicker.active = true;
+                activeEffects.screenFlicker.interval = setInterval(() => {
+                    canvas.style.opacity = canvas.style.opacity === "0.3" ? "1" : "0.3";
+                }, 200);
+                activeEffects.screenFlicker.timer = setTimeout(() => {
+                    clearInterval(activeEffects.screenFlicker.interval);
+                    canvas.style.opacity = "1";
+                    activeEffects.screenFlicker.active = false;
+                    activeEffects.screenFlicker.timer = null;
+                    activeEffects.screenFlicker.interval = null;
+                }, 3000);
+            } else {
+                clearTimeout(activeEffects.screenFlicker.timer);
+                activeEffects.screenFlicker.timer = setTimeout(() => {
+                    clearInterval(activeEffects.screenFlicker.interval);
+                    canvas.style.opacity = "1";
+                    activeEffects.screenFlicker.active = false;
+                    activeEffects.screenFlicker.timer = null;
+                    activeEffects.screenFlicker.interval = null;
+                }, 3000);
+            }
+        }
+    },
+    RANDOM_BOUNCE: {
+        name: "Random Bounce",
+        description: "신물리학 - 공이 랜덤한 방향으로 튕김",
+        color: "#00CED1",
+        duration: 3000,
+        effect: () => {
+            if (!activeEffects.randomBounce.active) {
+                activeEffects.randomBounce.active = true;
+                activeEffects.randomBounce.timer = setTimeout(() => {
+                    activeEffects.randomBounce.active = false;
+                    activeEffects.randomBounce.timer = null;
+                }, 3000);
+            } else {
+                clearTimeout(activeEffects.randomBounce.timer);
+                activeEffects.randomBounce.timer = setTimeout(() => {
+                    activeEffects.randomBounce.active = false;
+                    activeEffects.randomBounce.timer = null;
+                }, 3000);
+            }
+        }
+    },
+    INVINCIBLE: {
+        name: "Invincible",
+        description: "God Mode - 일정 시간 동안 무적",
+        color: "#FFD700",
+        duration: 3000,
+        effect: () => {
+            if (!activeEffects.invincible.active) {
+                activeEffects.invincible.active = true;
+                activeEffects.invincible.timer = setTimeout(() => {
+                    activeEffects.invincible.active = false;
+                    activeEffects.invincible.timer = null;
+                }, 3000);
+            } else {
+                clearTimeout(activeEffects.invincible.timer);
+                activeEffects.invincible.timer = setTimeout(() => {
+                    activeEffects.invincible.active = false;
+                    activeEffects.invincible.timer = null;
+                }, 3000);
+            }
+        }
+    }
+};
+
+// 특수 아이템 활성화 유무 및 타이머 저장 객체
+let activeEffects = {
+    bigPaddle: {active: false, timer: null, multiplier: 1.5},
+    speedUp: {active: false, timer: null, multiplier: 1.5},
+    smallPaddle: {active: false, timer: null, multiplier: 0.6},
+    reverseControl: {active: false, timer: null},
+    slowControl: {active: false, timer: null},
+    screenFlicker: {active: false, timer: null, interval: null},
+    randomBounce: {active: false, timer: null},
+    invincible: {active: false, timer: null}
+};
+
+// 입력 딜레이용 변수
+let controlDelay = 0;
+let lastControlTime = 0;
+
+
+// 특수 아이템 활성화 함수
+function activateSpecialItem(itemType, brickI, brickJ) {
+    if (!SPECIAL_ITEMS[itemType]) return;
+
+    const item = SPECIAL_ITEMS[itemType];
+
+    if (itemType === "DESTROY_AROUND") item.effect(brickI, brickJ);
+    else item.effect();
+
+    showItem(item);
+
+    console.log(`특수 아이템 활성화: ${item.name} - ${item.description}`);
+}
+
+let itemDisplayTimer = null;
+
+function showItem(item) {
+    let item_container = $("#game-item");
+    let item_img = $("#game-item > img");
+    let item_desc = $("#game-item > span");
+
+    if (itemDisplayTimer) clearTimeout(itemDisplayTimer);
+    let iconPath = getIconPath(item.name);
+    item_img.attr("src", iconPath);
+    item_img.attr("alt", item.name);
+    item_img.css("display", "block");
+
+    item_desc.text(item.description);
+
+    item_container.addClass("show");
+    itemDisplayTimer = setTimeout(() => {
+        item_container.removeClass("show");
+        setTimeout(() => {
+            item_img.attr("src", "");
+            item_desc.text("");
+        }, 300);
+    }, 3000);
+
+}
+
+function getIconPath(itemName) {
+    const iconMap = {
+        "Big Paddle": "../img/icons/big_paddle.png",
+        "Extra Life": "../img/icons/extra_life.png",
+        "Destroy Around": "../img/icons/destroy_around.png",
+        "Speed Up": "../img/icons/speed_up.png",
+        "Restore Bricks": "../img/icons/restore_bricks.png",
+        "Small Paddle": "../img/icons/small_paddle.png",
+        "Slow Control": "../img/icons/slow_control.png",
+        "Screen Flicker": "../img/icons/screen_flicker.png",
+        "Random Bounce": "../img/icons/random_bounce.png",
+        "Invincible": "../img/icons/invincible.png"
+    };
+
+    return iconMap[itemName] || "Does not exist";
+}
+
 
 function initSetting() {
     // special_item = storage.getItem("settings")["special_item"] || true;
@@ -77,39 +419,44 @@ $(() => {
 });
 
 
-// 마우스 이동에 따라 패들 움직이기
+// 마우스 이동에 따라 패들 움직이기 (딜레이 적용)
 function mouseMoveHandler(e) {
+    const currentTime = Date.now();
+    if (currentTime - lastControlTime < controlDelay) return;
+    lastControlTime = currentTime;
+
     const rect = canvas.getBoundingClientRect();
-    const relativeX = e.clientX - rect.left;
+    let relativeX = e.clientX - rect.left;
+
+    if (activeEffects.reverseControl.active) relativeX = canvas.width - relativeX;
+
     if (relativeX > 0 && relativeX < canvas.width) {
         const newX = relativeX - paddle.width / 2;
         paddle.x = Math.max(0, Math.min(canvas.width - paddle.width, newX));
     }
 }
 
-// 키보드 방향키 좌우로 패들 움직이기
+// 키보드 방향키 좌우로 패들 움직이기 Work in Progress
 function keyboardMoveHandler(e) {
+    // const currentTime = Date.now();
+    // if (e.type === "keydown" && currentTime - lastControlTime < controlDelay) return;
+    // TODO: 입력 반전 아이템 적용시 방향키 입력 반전 적용
     if (e.key === 'Right' || e.key === 'ArrowRight') {
-        rightPressed = true;
-    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
-        leftPressed = true;
-    } else if (e.type === 'keyup') {
-        if (e.key === 'Right' || e.key === 'ArrowRight') {
+        if (e.type === "keydown") {
+            rightPressed = true;
+            lastControlTime = currentTime;
+        } else if (e.type === "keyup") {
             rightPressed = false;
-        } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+        }
+    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+        if (e.type === "keydown") {
+            leftPressed = true;
+            lastControlTime = currentTime;
+        } else if (e.type === "keyup") {
             leftPressed = false;
         }
     }
-
-    if (e.type === "keyup") {
-        if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
-        if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
-    } else if (e.type === "keydown") {
-        if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
-        if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
-    }
 }
-
 
 function drawBall() {
     context.beginPath();
@@ -130,8 +477,23 @@ function drawBrick() {
     for (let i = 0; i < brickRow; i++) {
         for (let j = 0; j < brickCol; j++) {
             if (bricks[i][j].status) {
-                context.fillStyle = "white";
+                let brickColor = "white";
+                if (bricks[i][j].specialItem) {
+                    brickColor = SPECIAL_ITEMS[bricks[i][j].specialItem].color;
+                }
+
+                context.fillStyle = brickColor;
                 context.fillRect(bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
+
+                if (bricks[i][j].specialItem) {
+                    context.fillStyle = "white";
+                    context.font = "12px Arial";
+                    context.textAlign = "center";
+                    context.fillText(bricks[i][j].specialItem,
+                        bricks[i][j].x + brickWidth / 2,
+                        bricks[i][j].y + brickHeight / 2 + 4
+                    );
+                }
             }
         }
     }
@@ -143,11 +505,20 @@ function setBrick() {
     for (let i = 0; i < brickRow; i++) {
         bricks[i] = []
         for (let j = 0; j < brickCol; j++) {
+            // 25% 확률로 특수 아이템 부여
+            let specialItem = null;
+            if (Math.random() < 0.9) {
+                const itemKeys = Object.keys(SPECIAL_ITEMS);
+                // specialItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
+                specialItem = itemKeys[6];
+            }
+
             bricks[i][j] = {
                 x: j * (brickWidth + brickPadding) + brickStartX,
                 y: i * (brickHeight + brickPadding) + brickStartY,
                 status: true,
                 strength: brickStrength,
+                specialItem: specialItem
             }
         }
     }
@@ -262,7 +633,12 @@ function checkCollision() { // Work in Progress
                         if (x < y) ball.dx = -ball.dx;
                         else ball.dy = -ball.dy;
                         if (brick.strength > 0) brick.strength--;
-                        if (brick.strength === 0) brick.status = false;
+                        if (brick.strength === 0) {
+                            brick.status = false;
+                            if (brick.specialItem) {
+                                activateSpecialItem(brick.specialItem, i, j);
+                            }
+                        }
                         isCollison = true;
                         break;
                     }
@@ -272,9 +648,11 @@ function checkCollision() { // Work in Progress
         }
     }
 
-    // 바닥 벽과 부딪혔을 때 목숨 -1 Work in Progress
+    // 바닥 벽과 부딪혔을 때 목숨 -1 (무적 상태가 아닐 때만)
     if (!isCollison && ball.y + ball.radius > canvas.height) {
-        live--;
+        if (!activeEffects.invincible.active) {
+            live--;
+        }
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
         ball.dx = 5;
@@ -284,11 +662,20 @@ function checkCollision() { // Work in Progress
 
     // 패들과 부딪혔을 때 각도 속도 Work in Progress
     if (!isCollison && ball.y + ball.radius > paddle.y && ball.y - ball.radius < paddle.y + paddle.height && ball.x + ball.radius > paddle.x && ball.x - ball.radius < paddle.x + paddle.width) {
-        let hitPoint = (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
-        let angle = hitPoint * (Math.PI / 3);
-        let speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
-        ball.dx = speed * Math.sin(angle);
-        ball.dy = -Math.abs(speed * Math.cos(angle));
+        if (activeEffects.randomBounce.active) {
+            // 특수 아이템 활성화시
+            const randomAngle = (Math.random() - 0.5) * Math.PI; // -90도 ~ 90도
+            const speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
+            ball.dx = speed * Math.sin(randomAngle);
+            ball.dy = -Math.abs(speed * Math.cos(randomAngle));
+        } else {
+            // 특수 아이템 미적용시 
+            let hitPoint = (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
+            let angle = hitPoint * (Math.PI / 3);
+            let speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
+            ball.dx = speed * Math.sin(angle);
+            ball.dy = -Math.abs(speed * Math.cos(angle));
+        }
     }
 }
 
@@ -296,6 +683,7 @@ function checkCollision() { // Work in Progress
 function Logger() {
     console.log(`ball dx: ${ball.dx}`);
     console.log(`ball dy: ${ball.dy}`);
+    console.log(`live: ${live}`);
 }
 
 function updateGame() {
@@ -312,6 +700,13 @@ function drawGame() {
     drawBrick();
     drawBall();
     drawPaddle();
+
+    if (activeEffects.invincible.active) {
+        context.strokeStyle = "gold";
+        context.lineWidth = 3;
+        context.strokeRect(paddle.x - 2, paddle.y - 2, paddle.width + 4, paddle.height + 4);
+        context.lineWidth = 1;
+    }
 }
 
 function gameLoop() { // Game 재귀적 실행
