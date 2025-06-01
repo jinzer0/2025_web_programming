@@ -10,3 +10,10 @@
     justify-content: center;
     align-items: center;
 }
+
+.menu-item.disabled:hover {
+    cursor: not-allowed;
+    background-color: red;
+    transform: none;
+    transition: 0.3s ease-in-out;
+}
