@@ -3,7 +3,7 @@ $(document).ready(function () {
     let isDeleteMode = false;
 
     function loadProfiles() {
-        const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
+        const profiles = profileManager.getAllProfiles();
         const $container = $('#profile-item-container');
         $container.empty();
 
@@ -11,7 +11,7 @@ $(document).ready(function () {
             if (profiles[i]) {
                 $container.append(`
                     <button class="profile-item" data-index="${i}">
-                        ${profiles[i]}
+                        ${profiles[i].name}
                     </button>
                 `);
             } else {
@@ -24,10 +24,6 @@ $(document).ready(function () {
         }
 
         updateDeleteModeStyle();
-    }
-
-    function saveProfiles(profiles) {
-        localStorage.setItem("profiles", JSON.stringify(profiles));
     }
 
     function updateDeleteModeStyle() {
@@ -44,7 +40,7 @@ $(document).ready(function () {
 
     // 프로필 생성
     $('.menu-item:contains("Create New Profile")').on('click', function () {
-        const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
+        const profiles = profileManager.getAllProfiles();
 
         if (profiles.length >= maxProfiles) {
             alert("최대 3개의 프로필만 생성할 수 있습니다.");
@@ -52,12 +48,11 @@ $(document).ready(function () {
         }
 
         const name = prompt("새 프로필 이름을 입력하세요:");
-        // profiles: [ { name: "홍길동", level: 0, current_level: 1, is_playing: true, highest_score: 1232, longest_survived: "00:13:33", average_survived: "00:05:21", play_count: 1}, ... ]
-
         if (name && name.trim()) {
-            let profile = {name: name.trim(), level: 0, current_level: 0, is_playing: false, higest_score: 0, longest_survived: "00:00:00", average_survived: "00:00:00", play_count: 0};
-            profiles.push(profile);
-            saveProfiles(profiles);
+            const created = profileManager.createProfile(name.trim());
+            if (!created) {
+                alert("이미 존재하는 이름입니다.");
+            }
             loadProfiles();
         }
     });
@@ -71,20 +66,20 @@ $(document).ready(function () {
     // 프로필 클릭 시
     $('#profile-item-container').on('click', '.profile-item', function () {
         const index = $(this).data('index');
-        const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
+        const profiles = profileManager.getAllProfiles();
+        const selected = profiles[index];
 
-        if (isDeleteMode && profiles[index]) {
-            if (confirm(`"${profiles[index]}" 프로필을 삭제할까요?`)) {
-                profiles.splice(index, 1);
-                saveProfiles(profiles);
+        if (!selected) return;
+
+        if (isDeleteMode) {
+            if (confirm(`"${selected.name}" 프로필을 삭제할까요?`)) {
+                profileManager.deleteProfile(selected.name);
                 loadProfiles();
                 isDeleteMode = false;
                 updateDeleteModeStyle();
             }
         } else if (!$(this).hasClass('empty')) {
-            // 선택한 프로필 이름 저장
-            localStorage.setItem("selectedProfile", profiles[index]);
-            // level.html로 이동
+            profileManager.setCurrentProfile(selected.name);
             window.location.href = "level.html";
         }
     });
