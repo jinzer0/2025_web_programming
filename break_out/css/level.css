@@ -17,3 +17,36 @@
     transform: none;
     transition: 0.3s ease-in-out;
 }
+
+.menu-item {
+    border: 1px solid white;
+    background-color: black;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 15px;
+    width: 15rem;
+    height: 4rem;
+}
+
+.level-detail {
+    display: none;
+    position: absolute;
+    left: 45%;
+    top: 33%;
+    color:white;
+    background-color: black;
+    border: 2px solid white;
+    padding: 15px 10px;
+    border-radius: 0.2rem;
+    width: 30vw;
+    height: 30vh;
+    line-height: 30vh;
+    text-align: center;
+}
+
+.level-detail p {
+    font-size: 15px;
+    height: 20vh;
+}
