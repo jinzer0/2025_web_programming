@@ -509,8 +509,8 @@ function setBrick() {
             let specialItem = null;
             if (Math.random() < 0.9) {
                 const itemKeys = Object.keys(SPECIAL_ITEMS);
-                // specialItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
-                specialItem = itemKeys[6];
+                specialItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
+                // specialItem = itemKeys[6];
             }
 
             bricks[i][j] = {
