@@ -1,6 +1,6 @@
 #help-screen {
     width: 100vw;
-    height: 100vh;
+    height: 200vh;
     background-color: black;
     min-height: 950px;
     display: flex;
@@ -8,7 +8,7 @@
 }
 
 #help-screen-top-container {
-    height: 20%;
+    height: 10%;
 }
 
 #help-title {
@@ -18,26 +18,31 @@
 }
 
 #help-screen-middle-container {
-    height: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    height: auto;
+    /*height: 60%;
     color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: center;*/
 }
 
 .help-list, .help-description {
     text-align: left;
     width: 80%;
-    min-width: 1000px;
 }
 
 .help-list {
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 .help-description {
-    font-size: 1.4rem;
+    font-size: 1.0rem;
     margin-bottom: 1.4rem;
     font-family: "Quantico", "IBM Plex Sans KR", sans-serif;
 }
@@ -47,5 +52,24 @@
     justify-content: center;
     align-items: flex-end;
     padding-bottom: 2rem;
-    height: 20%;
+    height: 10%;
+}
+
+
+.help-row {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px;
+}
+
+.Special_item{
+    flex: 1;
+    background-color: #111;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 1rem;
+    color: white;
+    min-width: 300px;
 }
