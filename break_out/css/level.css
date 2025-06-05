@@ -34,19 +34,19 @@
     display: none;
     position: absolute;
     left: 45%;
-    top: 33%;
+    top: 30%;
     color:white;
     background-color: black;
     border: 2px solid white;
     padding: 15px 10px;
     border-radius: 0.2rem;
     width: 30vw;
-    height: 30vh;
-    line-height: 30vh;
+    height: 50vh;
     text-align: center;
 }
 
 .level-detail p {
-    font-size: 15px;
-    height: 20vh;
+    font-size: 1.3vw;
+    margin-top: 8rem;
+    margin-bottom: 1rem;
 }

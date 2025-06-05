@@ -11,13 +11,13 @@ $(() => {
     }).on("mouseleave", function() {
         $(".level-detail").eq($(this).index()-1).fadeOut(300, function() { $(this).hide(); });
     });
-    
-    
+
+
     $(".menu-item").on("click", function() {
         let level = $(this).data("level").toUpperCase();
         if (level && name) {
             profileManager.updateProfile(name, {current_level: LEVEL[level]});
-            window.open("game.html", "_self");
+            window.open("story.html", "_self");
         }
     });
 
