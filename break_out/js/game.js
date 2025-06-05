@@ -18,6 +18,8 @@ let brickStartY;
 let brickWidth;
 let brickHeight;
 let brickPadding;
+let brickMoveX = Math.random() * 3;
+let brickMoveY = Math.random() * 3;
 let isRunning = true;
 const storage = window.localStorage;
 let special_item, background_image, background_opacity, paddle_image, ball_image, brick_image, music, control;
@@ -506,6 +508,44 @@ function drawBrick() {
     }
 }
 
+function moveBrick() {
+    // 최상단 및 최하단 블럭의 좌표 계산
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (let i = 0; i < brickRow; i++) {
+        for (let j = 0; j < brickCol; j++) {
+            if (bricks[i][j].status) {
+                minX = Math.min(minX, bricks[i][j].x);
+                maxX = Math.max(maxX, bricks[i][j].x + brickWidth);
+                minY = Math.min(minY, bricks[i][j].y);
+                maxY = Math.max(maxY, bricks[i][j].y + brickHeight);
+            }
+        }
+    }
+    console.log(`minX: ${minX}, maxX: ${maxX}, minY: ${minY}, maxY: ${maxY}`);
+    if (minX <= 0) {
+        brickMoveX = -brickMoveX;
+    }
+    if (maxX >= canvas.width) {
+        brickMoveX = -brickMoveX;
+
+    }
+    if (minY <= 0) {
+        brickMoveY = -brickMoveY;
+    }
+    if (maxY >= canvas.height / 3) {
+        brickMoveY = -brickMoveY;
+
+    }
+    // 최상단 및 최하단 블럭의 좌표를 기준으로 이동 조건 검사
+    for (let i = 0; i < brickRow; i++) {
+        for (let j = 0; j < brickCol; j++) {
+            if (bricks[i][j].status) {
+                bricks[i][j].x += brickMoveX;
+                bricks[i][j].y += brickMoveY;
+            }
+        }
+    }
+}
 
 function setBrick() {
     bricks = []
@@ -676,7 +716,7 @@ function checkCollision() { // Work in Progress
             ball.dx = speed * Math.sin(randomAngle);
             ball.dy = -Math.abs(speed * Math.cos(randomAngle));
         } else {
-            // 특수 아이템 미적용시 
+            // 특수 아이템 미적용시
             let hitPoint = (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
             let angle = hitPoint * (Math.PI / 3);
             let speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
@@ -697,6 +737,7 @@ function updateGame() {
     updatePaddle();
     checkCollision();
     updateBall();
+    moveBrick();
     updateStatus();
     setStatus();
     checkWin();
