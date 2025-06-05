@@ -10,8 +10,8 @@ let status;
 let startTime;
 let paddle;
 let bricks;
-const brickRow = 3;
-const brickCol = 3;
+let brickRow = 3;
+let brickCol = 3;
 const brickStrength = 1;
 let brickStartX;
 let brickStartY;
@@ -23,6 +23,12 @@ const storage = window.localStorage;
 let special_item, background_image, background_opacity, paddle_image, ball_image, brick_image, music, control;
 let profile;
 let currentLevel = 0;
+const itemRate = {
+    0: 0.25,
+    1: 0.2,
+    2: 0.3,
+    3: 0.5,
+};
 // TODO: 특수 아이템, 적용 및 구현 - DONE!
 // TODO: 특수 아이템 활성화시 icon과 description 3초간 display - DONE!
 // TODO: 난이도에 따라 벽돌 개수, 크기 및 brickStrength 조정
@@ -386,7 +392,8 @@ function initSetting() {
     profile = profileManager.getCurrentProfile();
     console.log(`Current level: ${profile["current_level"]}`);
     currentLevel = profile["current_level"];
-    console.log(`Current Level: ${currentLevel}`);
+    brickRow = 4;
+    brickCol = currentLevel + 2;
 }
 
 function saveRecord(is_win, is_impossible) {
@@ -507,7 +514,7 @@ function setBrick() {
         for (let j = 0; j < brickCol; j++) {
             // 25% 확률로 특수 아이템 부여
             let specialItem = null;
-            if (Math.random() < 0.9) {
+            if (Math.random() < itemRate[currentLevel]) {
                 const itemKeys = Object.keys(SPECIAL_ITEMS);
                 specialItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
                 // specialItem = itemKeys[6];
