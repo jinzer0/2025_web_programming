@@ -1,4 +1,16 @@
 $(document).ready(function() {
+    localStorage.removeItem("isSettingMode");
+    let profile = profileManager.getCurrentProfile();
+    let preferences = profile ? profile["preferences"] : {
+        special_item: true,
+        background_image: "img/background1.jpg",
+        background_opacity: 0.8,
+        paddle_image: "../img/bat.jpg",
+        ball_image: "../img/ball.jpg",
+        brick_image: "../img/gold.jpg",
+        music: "../audio/1.mp3",
+        control: "mouse",};
+
     $('.menu-item').on('click', function() {
         let temp = $('.setting-detail');
         temp.each(function () {
