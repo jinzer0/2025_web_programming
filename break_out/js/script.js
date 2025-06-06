@@ -77,8 +77,8 @@ class ProfileManager {
                 musicVolume: "0.5",
             },
             highest_score: 0,
-            longest_survived_time: 0,
-            average_survived_time: 0,
+            longest_survived_time: "00:00:00",
+            average_survived_time: "00:00:00",
             current_level: 0,
             total_play_count: 0,
         };
