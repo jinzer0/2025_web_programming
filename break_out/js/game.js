@@ -12,7 +12,7 @@ let paddle;
 let bricks;
 let brickRow = 3;
 let brickCol = 3;
-const brickStrength = 1;
+let brickStrength = 1;
 let brickStartX;
 let brickStartY;
 let brickWidth;
@@ -34,6 +34,7 @@ let currentLevel = 0;
 let itemDisplayTimer = null;
 let AnimaID = null;
 let restartBallTimer = null;
+let particles = [];
 const itemRate = {
     0: 0.2,
     1: 0.25,
@@ -321,6 +322,20 @@ const SPECIAL_ITEMS = {
         }
     }
 };
+
+
+function breakEffect(brickI, brickJ) {
+    for (let i = 0; i < 8; i++) {
+        particles.push({
+            x: bricks[brickI][brickJ].x + brickWidth / 2,
+            y: bricks[brickI][brickJ].y + brickHeight / 2,
+            dx: (Math.random() - 0.5) * 10,
+            dy: (Math.random() - 0.5) * 10,
+            life: 0.8,
+            size: brickHeight
+        });
+    }
+}
 
 function playBrickSound(itemType = null) {
     let src;
@@ -802,6 +817,8 @@ function checkCollision() { // Work in Progress
                         if (brick.strength > 0) brick.strength--;
                         if (brick.strength === 0) {
                             playBrickSound(brick.specialItem);
+                            breakEffect(i, j);
+                            console.log("breakEffect called");
                             brick.status = false;
                             if (brick.specialItem) {
                                 activateSpecialItem(brick.specialItem, i, j);
@@ -879,6 +896,23 @@ function drawGame() {
     drawBrick();
     drawBall();
     drawPaddle();
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.dx;
+        p.y += p.dy;
+        p.life -= 0.02;
+
+        if (p.life <= 0) {
+            particles.splice(i, 1);
+            continue;
+        }
+
+        context.save();
+        context.globalAlpha = p.life;
+        context.drawImage(brickImgObj, p.x - p.size, p.y - p.size, p.size * 6, p.size * 1);
+        context.restore();
+    }
 
     if (activeEffects.invincible.active) {
         context.strokeStyle = "gold";
@@ -960,6 +994,7 @@ function init() {
     if (currentLevel === LEVEL.IMPOSSIBLE) {
         paddle.width = canvas.width * 0.1;
         ball.radius = canvas.width * 0.005;
+        brickStrength = 2;
     }
 
 
