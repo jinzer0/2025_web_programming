@@ -1,6 +1,6 @@
 #help-screen {
     width: 100vw;
-    height: 200vh;
+    height: 270vh;
     background-color: black;
     min-height: 950px;
     display: flex;
@@ -57,11 +57,11 @@
 
 
 .help-row {
-    display: flex;
-    gap: 2rem;
-    justify-content: center;
-    width: 100%;
-    max-width: 800px;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
 }
 
 .Special_item{
@@ -72,4 +72,6 @@
     padding: 1rem;
     color: white;
     min-width: 300px;
+    text-align: center;
 }
+
