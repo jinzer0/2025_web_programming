@@ -32,9 +32,10 @@ let preferences;
 let profile;
 let currentLevel = 0;
 let itemDisplayTimer = null;
-let AnimaID = null;
+let AnimaID = [];
 let restartBallTimer = null;
 let particles = [];
+let noCall = false;
 const itemRate = {
     0: 0.2,
     1: 0.25,
@@ -256,7 +257,7 @@ const SPECIAL_ITEMS = {
             if (!activeEffects.screenFlicker.active) {
                 activeEffects.screenFlicker.active = true;
                 activeEffects.screenFlicker.interval = setInterval(() => {
-                    canvas.style.opacity = canvas.style.opacity === "0.3" ? "1" : "0.3";
+                    canvas.style.opacity = canvas.style.opacity === "0.01" ? "1" : "0.01";
                 }, 200);
                 activeEffects.screenFlicker.timer = setTimeout(() => {
                     clearInterval(activeEffects.screenFlicker.interval);
@@ -466,18 +467,19 @@ function initSetting() {
 }
 
 function saveRecord(is_win, is_impossible) {
+    if (noCall) return;
     profile["total_play_count"]++;
     profile["highest_score"] = Math.max(score, profile["highest_score"]);
 
     // 게임을 이긴 경우, 현재 레벨이 최고 레벨보다 낮은 경우 current_level +=1, leve_progress update
-    if (is_win) {
+    if (is_win && !noCall) {
         if (currentLevel < LEVEL.IMPOSSIBLE) currentLevel++;
         profile["current_level"] = currentLevel;
         profile["level_progress"][currentLevel]["unlocked"] = true;
         profile["level_progress"][currentLevel - 1]["completed"] = true;
     }
 
-    if (is_impossible) {
+    if (is_impossible && !noCall) {
         // impossible 레벨인 경우 longest_survived_time, average_survived_time 업데이트
         let longest_survived_time = Math.max(parseTime(profile["longest_survived_time"]), parseTime(time));
         profile["longest_survived_time"] = stringTime(longest_survived_time);
@@ -485,7 +487,8 @@ function saveRecord(is_win, is_impossible) {
         profile["average_survived_time"] = stringTime(average_survived_time);
     }
     profileManager.updateProfile(profile["name"], profile);
-    storage.setItem("gameResult", JSON.stringify({...status, "is_win": is_win}));
+    storage.setItem("gameResult", JSON.stringify({...status, "is_win": is_win}))
+    noCall = true;
 }
 
 function StartButton() {
@@ -879,6 +882,8 @@ function Logger() {
     console.log(`ball dx: ${ball.dx}`);
     console.log(`ball dy: ${ball.dy}`);
     console.log(`live: ${live}`);
+    console.log(`AnimaID length: ${AnimaID.length}`);
+    console.log(`AnimaID: ${AnimaID}`);
 }
 
 function updateGame() {
@@ -923,18 +928,15 @@ function drawGame() {
 }
 
 
-
 function gameLoop() { // Game 재귀적 실행
     if (!isRunning) {
-        if (AnimaID) {
-            cancelAnimationFrame(AnimaID);
-            AnimaID = null;
-        }
-        window.location.href = "result.html";
+        AnimaID.forEach(id => cancelAnimationFrame(id));
+        window.open("result.html", "_self");
+        return;
     }
     updateGame();
     drawGame();
-    requestAnimationFrame(gameLoop);
+    AnimaID.push(requestAnimationFrame(gameLoop));
 }
 
 function init() {
