@@ -1,6 +1,6 @@
 $(() => {
-    $(".to-menu-button").click(() => {
-        open("home.html", "_self");
+    $(".to-menu-button").click(function() {
+        if ($(this).text().toLowerCase() === "back to menu") open("home.html", "_self");
     });
 
     $(".skip-button").click(() => {
