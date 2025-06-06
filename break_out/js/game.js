@@ -370,7 +370,8 @@ function getIconPath(itemName) {
         "Slow Control": "../img/icons/slow_control.png",
         "Screen Flicker": "../img/icons/screen_flicker.png",
         "Random Bounce": "../img/icons/random_bounce.png",
-        "Invincible": "../img/icons/invincible.png"
+        "Invincible": "../img/icons/invincible.png",
+        "Reverse Control": "../img/icons/reverse_control.png"
     };
 
     return iconMap[itemName] || "Does not exist";
@@ -420,7 +421,7 @@ function initSetting() {
 function saveRecord(is_win, is_impossible) {
     // TODO profile 객체 내 level_progress 객체 업데이트, 다음 레벨로 진행할 수 있도록 profile["current_level"] 업데이트
     profile["total_play_count"]++;
-    profile["higest_score"] = Math.max(score, profile["higest_score"]);
+    profile["highest_score"] = Math.max(score, profile["highest_score"]);
 
     // 게임을 이긴 경우, 현재 레벨이 최고 레벨보다 낮은 경우 current_level +=1, leve_progress update
     if (is_win) {
@@ -699,11 +700,11 @@ function updateBall() {
 }
 
 function checkWin() {
-    if (live === 0) {
+    if (live === 0 && isRunning) {
         console.log("Player lose!");
         alert("Are you idiot?");
         isRunning = false;
-    } else if (bricks.flat().filter(brick => brick.status).length === 0) {
+    } else if (bricks.flat().filter(brick => brick.status).length === 0 && isRunning) {
         console.log("Player win!");
         alert("Are you genius?");
         isRunning = false;

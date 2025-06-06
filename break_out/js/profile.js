@@ -80,7 +80,9 @@ $(document).ready(function () {
             }
         } else if (!$(this).hasClass('empty')) {
             profileManager.setCurrentProfile(selected.name);
-            window.location.href = "level.html";
+            let isSettingMode = JSON.parse(localStorage.getItem("isSettingMode"));
+            if (isSettingMode) window.location.href = "setting.html";
+            else window.location.href = "level.html";
         }
     });
 
