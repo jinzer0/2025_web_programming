@@ -1,6 +1,10 @@
 $(() => {
     $(".to-menu-button").click(function() {
-        if ($(this).text().toLowerCase() === "back to menu") open("home.html", "_self");
+        if ($(this).text().toLowerCase() === "back to menu") {
+            localStorage.removeItem("gameResult");
+            localStorage.removeItem("isSettingMode");
+            open("home.html", "_self");
+        }
     });
 
     $(".skip-button").click(() => {
@@ -62,14 +66,15 @@ class ProfileManager {
                 3: { unlocked: false, completed: false }
             },
             preferences: {
-                special_item: true,
-                background_image: "img/background1.jpg",
-                background_opacity: 0.8,
-                paddle_image: "../img/bat.jpg",
-                ball_image: "../img/ball.jpg",
-                brick_image: "../img/gold.jpg",
-                music: "../audio/1.mp3",
-                control: "mouse",
+                specialItem: true,
+                selectedPaddle: "bat",
+                selectedBall: "grenade",
+                selectedMusic: 1,
+                backgroundOpacity: "0.5",
+                backgroundImage: "bg1",
+                selectedBrick: "money",
+                controlMethod: "mouse",
+                musicVolume: "0.5",
             },
             highest_score: 0,
             longest_survived_time: 0,
