@@ -18,25 +18,21 @@ let brickStartY;
 let brickWidth;
 let brickHeight;
 let brickPadding;
-let brickMoveX = Math.random() * 3;
-let brickMoveY = Math.random() * 3;
+let brickMoveX;
+let brickMoveY;
 let isRunning = true;
 const storage = window.localStorage;
 let special_item, background_image, background_opacity, paddle_image, ball_image, brick_image, music, control;
 let profile;
 let currentLevel = 0;
 const itemRate = {
-    0: 0.25,
-    1: 0.2,
+    0: 0.2,
+    1: 0.25,
     2: 0.3,
-    3: 0.5,
+    3: 0.4,
 };
-// TODO: 특수 아이템, 적용 및 구현 - DONE!
-// TODO: 특수 아이템 활성화시 icon과 description 3초간 display - DONE!
-// TODO: 난이도에 따라 벽돌 개수, 크기 및 brickStrength 조정
 
 
-// 특수 아이템 객체
 const SPECIAL_ITEMS = {
     BIG_PADDLE: {
         name: "Big Paddle",
@@ -380,22 +376,45 @@ function getIconPath(itemName) {
     return iconMap[itemName] || "Does not exist";
 }
 
+let ballImgObj = null;
+let paddleImgObj = null;
+let backgroundImgObj = null;
+let brickImgObj = null;
+let bgmAudio = null;
 
 function initSetting() {
     // special_item = storage.getItem("settings")["special_item"] || true;
-    // background_image = storage.getItem("settings")["background_image"] || "../img/bg1.jpg";
-    // background_opacity = storage.getItem("settings")["background_opacity"] || 1.0;
-    // paddle_image = storage.getItem("settings")["paddle_image"] || "../img/bat.jpg";
-    // ball_image = storage.getItem("settings")["ball_image"] || "../img/grenade.jpg";
-    // brick_image = storage.getItem("settings")["brick_image"] || "../img/brick.jpg";
-    // music = storage.getItem("settings")["music"] || "../audio/1.mp3";
+    background_image = "../img/"+storage.getItem("backgroundImage")+".jpg" || "../img/bg1.jpg";
+    backgroundImgObj = new Image();
+    backgroundImgObj.src = background_image;
+    background_opacity = Number(storage.getItem("backgroundOpacity")) || 1.0;
+    paddle_image = "../img/"+storage.getItem("selectedPaddle")+".jpg" || "../img/bat.jpg";
+    paddleImgObj = new Image();
+    paddleImgObj.src = paddle_image;
+    ball_image = "../img/"+storage.getItem("selectedBall")+".jpg" || "../img/grenade.jpg";
+    ballImgObj = new Image();
+    ballImgObj.src = ball_image;
+    brick_image = "../img/"+storage.getItem("selectedBrick")+".jpg" || "../img/money.jpg";
+    brickImgObj = new Image();
+    brickImgObj.src = brick_image;
+    music = "../audio/"+storage.getItem("selectedMusic")+".mp3" || "../audio/1.mp3";
+    bgmAudio = new Audio(music);
+    bgmAudio.loop = true;
+    bgmAudio.volume = Number(storage.getItem("musicVolume"));  // 0.0 ~ 1.0
+    document.addEventListener("click", () => {
+        if (bgmAudio && bgmAudio.paused) {
+            bgmAudio.play();
+        }
+    });
     // control = storage.getItem("settings")["control"] || "mouse";
     //TODO Error: profile is null - need to check JSON.parse or stringify
     profile = profileManager.getCurrentProfile();
     console.log(`Current level: ${profile["current_level"]}`);
     currentLevel = profile["current_level"];
-    brickRow = 4;
-    brickCol = currentLevel + 2;
+    brickRow = currentLevel + 3 > 5 ? 5 : currentLevel + 3;
+    brickCol = 4;
+    brickMoveX = Math.random() * 3 + currentLevel * 0.6;
+    brickMoveY = Math.random() * 3 + currentLevel * 0.6;
 }
 
 function saveRecord(is_win, is_impossible) {
@@ -419,12 +438,55 @@ function saveRecord(is_win, is_impossible) {
         profile["average_survived_time"] = stringTime(average_survived_time);
     }
     profileManager.updateProfile(profile["name"], profile);
+    storage.setItem("gameResult", JSON.stringify( {...status, "is_win": is_win} ));
+}
+
+function StartButton() {
+    const startBtn = $("<button/>");
+    startBtn.css({
+        position: "absolute",
+        left: "50%",
+        top: "40%",
+        transform: "translate(-50%, -50%)",
+        padding: "16px 32px",
+        fontSize: "30px",
+        cursor: "pointer",
+        zIndex: 1,
+        backgroundColor: "#4CAF50",
+        color: "white",
+        border: "1px solid #45A049",
+        borderRadius: "4px",
+        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
+        fontFamily: "Quantico, IBM Plex Sans KR, sans-serif",
+        transition: "0.3s ease-in-out",
+    });
+    startBtn.text("Start game");
+    startBtn.on("mouseenter", function() {
+        $(this).css({
+            backgroundColor: "black",
+            border: "1px solid white",
+        });
+    }).on("mouseleave", function() {
+        $(this).css({
+            backgroundColor: "#4CAF50",
+            border: "1px solid #45A049",
+        });
+    }).on("click", () => {
+        if (bgmAudio && bgmAudio.paused) {
+            bgmAudio.play().catch(err => console.warn("BGM play blocked:", err));
+        }
+        startBtn.remove();
+        init();
+        gameLoop();
+    });
+    $("body").append(startBtn);
 }
 
 
 $(() => {
-    init();
-    gameLoop();
+    StartButton();
+    // init(); //StartButton 안에 존재
+    // gameLoop();
 });
 
 
@@ -468,33 +530,50 @@ function keyboardMoveHandler(e) {
 }
 
 function drawBall() {
-    context.beginPath();
-    context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    context.fillStyle = ball.color;
-    context.fill();
-    context.closePath();
+    if (ballImgObj && ballImgObj.complete) {
+        context.drawImage(ballImgObj, ball.x - ball.radius, ball.y - ball.radius, ball.radius * 2, ball.radius * 2);
+    } else {
+        context.beginPath();
+        context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        context.fillStyle = ball.color;
+        context.fill();
+        context.closePath();
+    }
 }
 
 function drawPaddle() {
-    context.beginPath();
-    context.fillStyle = paddle.color;
-    context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
-    context.closePath();
+    if(paddleImgObj && paddleImgObj.complete) {
+        context.drawImage(paddleImgObj, paddle.x, paddle.y, paddle.width, paddle.height);
+    } else {
+        context.beginPath();
+        context.fillStyle = paddle.color;
+        context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+        context.closePath();
+    }
+}
+
+function drawTintedImage(img, x, y, width, height, tintColor) {
+    context.drawImage(img, x, y, width, height);
+    context.fillStyle = tintColor;
+    context.globalAlpha = 0.5;
+    context.globalCompositeOperation = "source-atop";
+    context.fillRect(x, y, width, height);
+    context.globalAlpha = 1.0;
+    context.globalCompositeOperation = "source-over";
 }
 
 function drawBrick() {
     for (let i = 0; i < brickRow; i++) {
         for (let j = 0; j < brickCol; j++) {
             if (bricks[i][j].status) {
-                let brickColor = "white";
                 if (bricks[i][j].specialItem) {
                     brickColor = SPECIAL_ITEMS[bricks[i][j].specialItem].color;
-                }
-
-                context.fillStyle = brickColor;
-                context.fillRect(bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
-
-                if (bricks[i][j].specialItem) {
+                    if (brickImgObj && brickImgObj.complete) {
+                        drawTintedImage(brickImgObj, bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight, brickColor);
+                    } else {
+                        context.fillStyle = brickColor;
+                        context.fillRect(bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
+                    }
                     context.fillStyle = "white";
                     context.font = "12px Arial";
                     context.textAlign = "center";
@@ -502,6 +581,13 @@ function drawBrick() {
                         bricks[i][j].x + brickWidth / 2,
                         bricks[i][j].y + brickHeight / 2 + 4
                     );
+                } else {
+                    if (brickImgObj && brickImgObj.complete) {
+                    context.drawImage(brickImgObj, bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
+                } else {
+                    context.fillStyle = "white";
+                    context.fillRect(bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
+                }
                 }
             }
         }
@@ -509,7 +595,6 @@ function drawBrick() {
 }
 
 function moveBrick() {
-    // 최상단 및 최하단 블럭의 좌표 계산
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (let i = 0; i < brickRow; i++) {
         for (let j = 0; j < brickCol; j++) {
@@ -522,21 +607,11 @@ function moveBrick() {
         }
     }
     console.log(`minX: ${minX}, maxX: ${maxX}, minY: ${minY}, maxY: ${maxY}`);
-    if (minX <= 0) {
-        brickMoveX = -brickMoveX;
-    }
-    if (maxX >= canvas.width) {
-        brickMoveX = -brickMoveX;
+    if (minX <= 0) brickMoveX = -brickMoveX;
+    if (maxX >= canvas.width) brickMoveX = -brickMoveX;
+    if (minY <= 0) brickMoveY = -brickMoveY;
+    if (maxY >= canvas.height / 2) brickMoveY = -brickMoveY;
 
-    }
-    if (minY <= 0) {
-        brickMoveY = -brickMoveY;
-    }
-    if (maxY >= canvas.height / 3) {
-        brickMoveY = -brickMoveY;
-
-    }
-    // 최상단 및 최하단 블럭의 좌표를 기준으로 이동 조건 검사
     for (let i = 0; i < brickRow; i++) {
         for (let j = 0; j < brickCol; j++) {
             if (bricks[i][j].status) {
@@ -552,7 +627,6 @@ function setBrick() {
     for (let i = 0; i < brickRow; i++) {
         bricks[i] = []
         for (let j = 0; j < brickCol; j++) {
-            // 25% 확률로 특수 아이템 부여
             let specialItem = null;
             if (Math.random() < itemRate[currentLevel]) {
                 const itemKeys = Object.keys(SPECIAL_ITEMS);
@@ -586,16 +660,13 @@ function setStatus() {
         $("#game-info>span:nth-of-type(3)").text(`Remained live : ${live}`);
         status.live = live;
     }
+    $("#game-info>span:nth-of-type(4)").text(`Level : ${"★".repeat(currentLevel + 2)}${"☆".repeat(5 - (currentLevel + 2))}`);
 }
 
 function updateStatus() {
     // 시간 계산 - 왼쪽 상단 경과 시간 표시용
-    const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-    const hours = String(Math.floor(elapsedTime / 3600)).padStart(2, '0');
-    const minutes = String(Math.floor((elapsedTime % 3600) / 60)).padStart(2, '0');
-    const seconds = String(elapsedTime % 60).padStart(2, '0');
-    time = `${hours}:${minutes}:${seconds}`;
-
+    time = stringTime(Math.floor(Date.now() - startTime));
+    const elapsedTime = parseTime(time);
     // 점수 계산 - 왼쪽 상단 현재점수 표시용
     const remainingBricks = bricks.flat().filter(brick => brick.status).length;
     const totalBricks = brickRow * brickCol;
@@ -637,7 +708,7 @@ function checkWin() {
         alert("Are you genius?");
         isRunning = false;
     }
-    saveRecord(bricks.flat().filter(brick => brick.status).length === 0 && live > 0, currentLevel === 3);
+    saveRecord(bricks.flat().filter(brick => brick.status).length === 0 && live > 0, currentLevel === LEVEL.IMPOSSIBLE);
 }
 
 
@@ -648,6 +719,11 @@ function resetCanvas() {
     context.strokeStyle = "white";
     context.strokeRect(0, 0, canvas.width, canvas.height);
     context.closePath();
+    if (backgroundImgObj && backgroundImgObj.complete) {
+        context.globalAlpha = background_opacity || 0.5;  // 불투명도 조절
+        context.drawImage(backgroundImgObj, 0, 0, canvas.width, canvas.height);
+        context.globalAlpha = 1.0; // 원상복구
+    }
 }
 
 
@@ -737,7 +813,7 @@ function updateGame() {
     updatePaddle();
     checkCollision();
     updateBall();
-    moveBrick();
+    if (currentLevel >= LEVEL.NORMAL) moveBrick();
     updateStatus();
     setStatus();
     checkWin();
@@ -756,9 +832,15 @@ function drawGame() {
         context.lineWidth = 1;
     }
 }
-
+let AnimaID = null;
 function gameLoop() { // Game 재귀적 실행
-    if (!isRunning) return;
+    if (!isRunning) {
+        if (AnimaID) {
+            cancelAnimationFrame(AnimaID);
+            AnimaID = null;
+        }
+        window.location.href = "result.html";
+    }
     updateGame();
     drawGame();
     requestAnimationFrame(gameLoop);
@@ -811,5 +893,3 @@ function init() {
     setBrick();
     setInterval(Logger, 1000);
 }
-
-
