@@ -48,6 +48,7 @@ const SPECIAL_ITEMS = {
         description: "공구 상자 - 패들 크기 일시적 증가",
         color: "#32CD32",
         duration: 3000,
+        sound: "../audio/sfx/sizechange.mp3",
         effect: () => {
             if (!activeEffects.bigPaddle.active) {
                 activeEffects.bigPaddle.active = true;
@@ -79,6 +80,7 @@ const SPECIAL_ITEMS = {
         name: "Extra Life",
         description: "방탄 조끼 - 목숨 1 추가",
         color: "#FF69B4",
+        sound: "../audio/sfx/extra_life.mp3",
         effect: () => {
             live++;
         }
@@ -87,6 +89,7 @@ const SPECIAL_ITEMS = {
         name: "Destroy Around",
         description: "폭탄 - 주변 벽돌 파괴",
         color: "#FF4500",
+        sound: "../audio/sfx/destroy_around.mp3",
         effect: (brickI, brickJ) => {
             const directions = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]; // 해당 벽돌 기준 모든 방향 1칸씩
             directions.forEach(([di, dj]) => {
@@ -103,6 +106,7 @@ const SPECIAL_ITEMS = {
         description: "공 속도 일시적 증가",
         color: "#FFD700",
         duration: 3000,
+        sound: "../audio/sfx/speed_up.mp3",
         effect: () => {
             if (!activeEffects.speedUp.active) {
                 activeEffects.speedUp.active = true;
@@ -134,6 +138,7 @@ const SPECIAL_ITEMS = {
         name: "Restore Bricks",
         description: "수배 레벨 증가 - 벽돌 추가(부순 벽돌 중 일부 재생성)",
         color: "#8B4513",
+        sound: "../audio/sfx/restore_bricks.mp3",
         effect: () => {
             const destroyedBricks = [];
             for (let i = 0; i < brickRow; i++) {
@@ -167,6 +172,7 @@ const SPECIAL_ITEMS = {
         description: "고장난 총 - 패들 크기 일시적 감소",
         color: "#DC143C",
         duration: 3000,
+        sound: "../audio/sfx/sizechange.mp3",
         effect: () => {
             if (!activeEffects.smallPaddle.active) {
                 activeEffects.smallPaddle.active = true;
@@ -196,6 +202,7 @@ const SPECIAL_ITEMS = {
         description: "혼란 - 패틀 움직임 일시적 반전(입력 반전)",
         color: "#FF6347",
         duration: 3000,
+        sound: "../audio/sfx/reverse_control.mp3",
         effect: () => {
             if (!activeEffects.reverseControl.active) {
                 activeEffects.reverseControl.active = true;
@@ -218,6 +225,7 @@ const SPECIAL_ITEMS = {
         description: "해킹장치 오류 - 패들 움직임 일시적 둔화(입력 딜레이)",
         color: "#4B0082",
         duration: 3000,
+        sound: "../audio/sfx/slow_control.mp3",
         effect: () => {
             if (!activeEffects.slowControl.active) {
                 activeEffects.slowControl.active = true;
@@ -242,6 +250,7 @@ const SPECIAL_ITEMS = {
         description: "정전 - 화면 일시적 깜빡거림",
         color: "#800080",
         duration: 3000,
+        sound: "../audio/sfx/screen_flicker.mp3",
         effect: () => {
             if (!activeEffects.screenFlicker.active) {
                 activeEffects.screenFlicker.active = true;
@@ -272,6 +281,7 @@ const SPECIAL_ITEMS = {
         description: "컴공식 물리학 - 공이 랜덤한 방향으로 튕김",
         color: "#00CED1",
         duration: 3000,
+        sound: "../audio/sfx/random_bounce.mp3",
         effect: () => {
             if (!activeEffects.randomBounce.active) {
                 activeEffects.randomBounce.active = true;
@@ -293,6 +303,7 @@ const SPECIAL_ITEMS = {
         description: "God Mode - 일정 시간 동안 무적",
         color: "#FFD700",
         duration: 3000,
+        sound: "../audio/sfx/invincible.mp3",
         effect: () => {
             if (!activeEffects.invincible.active) {
                 activeEffects.invincible.active = true;
@@ -310,6 +321,20 @@ const SPECIAL_ITEMS = {
         }
     }
 };
+
+function playBrickSound(itemType = null) {
+    let src;
+
+    if (itemType && SPECIAL_ITEMS[itemType] && SPECIAL_ITEMS[itemType].sound) {
+        src = SPECIAL_ITEMS[itemType].sound;
+    } else {
+        src = "../audio/sfx/brick_hit.mp3"; // 일반 벽돌 기본 효과음
+    }
+
+    const sfx = new Audio(src);
+    sfx.volume = 0.3;
+    sfx.play().catch(err => console.warn("벽돌 효과음 재생 실패:", err));
+}
 
 // 특수 아이템 활성화 유무 및 타이머 저장 객체
 let activeEffects = {
@@ -776,6 +801,7 @@ function checkCollision() { // Work in Progress
                         else ball.dy = -ball.dy;
                         if (brick.strength > 0) brick.strength--;
                         if (brick.strength === 0) {
+                            playBrickSound(brick.specialItem);
                             brick.status = false;
                             if (brick.specialItem) {
                                 activateSpecialItem(brick.specialItem, i, j);
