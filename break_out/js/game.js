@@ -33,6 +33,7 @@ let profile;
 let currentLevel = 0;
 let itemDisplayTimer = null;
 let AnimaID = null;
+let restartBallTimer = null;
 const itemRate = {
     0: 0.2,
     1: 0.25,
@@ -268,7 +269,7 @@ const SPECIAL_ITEMS = {
     },
     RANDOM_BOUNCE: {
         name: "Random Bounce",
-        description: "신물리학 - 공이 랜덤한 방향으로 튕김",
+        description: "컴공식 물리학 - 공이 랜덤한 방향으로 튕김",
         color: "#00CED1",
         duration: 3000,
         effect: () => {
@@ -350,7 +351,6 @@ function showItem(item) {
     if (itemDisplayTimer) clearTimeout(itemDisplayTimer);
     let iconPath = getIconPath(item.name);
     item_img.attr("src", iconPath);
-    item_img.attr("alt", item.name);
     item_img.css("display", "block");
 
     item_desc.text(item.description);
@@ -417,12 +417,15 @@ function initSetting() {
     currentLevel = profile["current_level"];
     brickRow = currentLevel + 3 > 5 ? 5 : currentLevel + 3;
     brickCol = 4;
+    if (currentLevel === LEVEL.IMPOSSIBLE) {
+        brickRow = 15;
+        brickCol = 18;
+    }
     brickMoveX = Math.random() * 3 + currentLevel * 0.6;
     brickMoveY = Math.random() * 3 + currentLevel * 0.6;
 }
 
 function saveRecord(is_win, is_impossible) {
-    // TODO profile 객체 내 level_progress 객체 업데이트, 다음 레벨로 진행할 수 있도록 profile["current_level"] 업데이트
     profile["total_play_count"]++;
     profile["highest_score"] = Math.max(score, profile["highest_score"]);
 
@@ -573,20 +576,14 @@ function drawBrick() {
         for (let j = 0; j < brickCol; j++) {
             if (bricks[i][j].status) {
                 if (bricks[i][j].specialItem) {
-                    brickColor = SPECIAL_ITEMS[bricks[i][j].specialItem].color;
+                    let brickColor = SPECIAL_ITEMS[bricks[i][j].specialItem].color;
+                    brickColor = "#191919";
                     if (brickImgObj && brickImgObj.complete) {
                         drawTintedImage(brickImgObj, bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight, brickColor);
                     } else {
                         context.fillStyle = brickColor;
                         context.fillRect(bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
                     }
-                    context.fillStyle = "white";
-                    context.font = "12px Arial";
-                    context.textAlign = "center";
-                    context.fillText(bricks[i][j].specialItem,
-                        bricks[i][j].x + brickWidth / 2,
-                        bricks[i][j].y + brickHeight / 2 + 4
-                    );
                 } else {
                     if (brickImgObj && brickImgObj.complete) {
                         context.drawImage(brickImgObj, bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
@@ -612,7 +609,6 @@ function moveBrick() {
             }
         }
     }
-    console.log(`minX: ${minX}, maxX: ${maxX}, minY: ${minY}, maxY: ${maxY}`);
     if (minX <= 0) brickMoveX = -brickMoveX;
     if (maxX >= canvas.width) brickMoveX = -brickMoveX;
     if (minY <= 0) brickMoveY = -brickMoveY;
@@ -637,7 +633,7 @@ function setBrick() {
             if (special_item && Math.random() < itemRate[currentLevel]) {
                 const itemKeys = Object.keys(SPECIAL_ITEMS);
                 specialItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
-                // specialItem = itemKeys[6];
+                if (Math.random() < 0.4) specialItem = itemKeys[3];
             }
 
             bricks[i][j] = {
@@ -704,6 +700,19 @@ function updateBall() {
     ball.y += ball.dy;
 }
 
+function setBallSpeed(isSlow) {
+    if (restartBallTimer) restartBallTimer = null;
+
+    if (isSlow) {
+        ball.dx *= 0.7;
+        ball.dy *= 0.7;
+        restartBallTimer = setTimeout(() => {
+            ball.dx /= 0.7;
+            ball.dy /= 0.7;
+        }, 1500);
+    }
+}
+
 function checkWin() {
     if (live === 0 && isRunning) {
         console.log("Player lose!");
@@ -714,7 +723,11 @@ function checkWin() {
         alert("Are you genius?");
         isRunning = false;
     }
-    saveRecord(bricks.flat().filter(brick => brick.status).length === 0 && live > 0, currentLevel === LEVEL.IMPOSSIBLE);
+    if (currentLevel === LEVEL.IMPOSSIBLE && parseTime(time) > parseTime("00:00:59")) {
+        alert("Time done.");
+        isRunning = false;
+    }
+    if (!isRunning) saveRecord(bricks.flat().filter(brick => brick.status).length === 0 && live > 0, currentLevel === LEVEL.IMPOSSIBLE);
 }
 
 
@@ -786,6 +799,7 @@ function checkCollision() { // Work in Progress
         ball.y = canvas.height / 2;
         ball.dx = 5;
         ball.dy = 7;
+        setBallSpeed(true);
         isCollison = true;
     }
 
@@ -797,6 +811,11 @@ function checkCollision() { // Work in Progress
             const speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
             ball.dx = speed * Math.sin(randomAngle);
             ball.dy = -Math.abs(speed * Math.cos(randomAngle));
+            ball.dx *= Math.random() * 0.3 + 0.9;
+            ball.dx *= Math.random() * 0.3 + 0.9;
+            // 일정 속도 이하일 시 1.2배
+            if (Math.abs(ball.dx) < 5) ball.dx *= 1.4;
+            if (Math.abs(ball.dy) < 5) ball.dy *= 1.4;
         } else {
             // 특수 아이템 미적용시
             let hitPoint = (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
@@ -804,6 +823,10 @@ function checkCollision() { // Work in Progress
             let speed = Math.sqrt(ball.dx ** 2 + ball.dy ** 2);
             ball.dx = speed * Math.sin(angle);
             ball.dy = -Math.abs(speed * Math.cos(angle));
+            ball.dx *= Math.random() * 0.3 + 0.9;
+            ball.dx *= Math.random() * 0.3 + 0.9;
+            if (Math.abs(ball.dx) < 5) ball.dx *= 1.4;
+            if (Math.abs(ball.dy) < 5) ball.dy *= 1.4;
         }
     }
 }
@@ -876,6 +899,9 @@ function init() {
     brickPadding = canvas.width * 0.004;
     brickWidth = canvas.width / (brickCol + 2);
     brickHeight = canvas.height * 0.05;
+    if (currentLevel === LEVEL.IMPOSSIBLE) {
+        brickHeight = canvas.height * 0.01;
+    }
     brickStartX = (canvas.width - (brickWidth + brickPadding) * brickCol) / 2;
     brickStartY = canvas.height * 0.08;
     rightPressed = false;
@@ -885,8 +911,8 @@ function init() {
         y: canvas.height / 2,
         radius: canvas.width * 0.015,
         src: "img/img.jpg",
-        dx: 5,
-        dy: 7,
+        dx: 7,
+        dy: 10,
         color: "red",
     }
 
@@ -905,8 +931,14 @@ function init() {
         src: "img/img.jpg",
         color: "blue",
     }
+    if (currentLevel === LEVEL.IMPOSSIBLE) {
+        paddle.width = canvas.width * 0.1;
+        ball.radius = canvas.width * 0.005;
+    }
+
 
     bricks = [];
     setBrick();
+    setBallSpeed(true);
     setInterval(Logger, 1000);
 }
