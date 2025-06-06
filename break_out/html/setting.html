@@ -70,7 +70,6 @@
             <div class="brick-options">
                 <img src="../img/money.jpg" class="brick-option" data-id="money" alt="Concrete Brick">
                 <img src="../img/goldbar.jpg" class="brick-option" data-id="goldbar" alt="Safe Box Brick">
-                <img src="../img/brick_sign.png" class="brick-option" data-id="sign" alt="Street Sign Brick">
             </div>
             <p id="brick-status" class="status-text"></p>
         </div>
@@ -81,7 +80,9 @@
                 <div class="music-option" data-id="1">1</div>
                 <div class="music-option" data-id="2">2</div>
                 <div class="music-option" data-id="3">3</div>
-                <div class="music-option" data-id="none">No Music</div>
+                <p style="margin-top: 30px;">음량 조절 (0 ~ 1.0)</p>
+                <input type="range" id="volume-slider" min="0" max="1.0" step="0.1" value="1.0">
+                <p id="volume-value" class="status-text">현재: 1.0</p>
             </div>
         </div>
         <div class="setting-detail" id="control-setting">

@@ -78,7 +78,7 @@ $(document).ready(function() {
         $('#opacity-value').text(`현재: ${savedOpacity}`);
     }
 
-     $('.paddle-option').on('click', function () {
+    $('.paddle-option').on('click', function () {
         $('.paddle-option').removeClass('selected');
         $(this).addClass('selected');
         let selected = $(this).data('id');
@@ -145,6 +145,18 @@ $(document).ready(function() {
         }
 
         $('#music-status').text(`선택한 음악: ${musicName}`);
+    }
+
+    $('#volume-slider').on('input', function () {
+        const volume = parseFloat($(this).val()).toFixed(1);
+        localStorage.setItem('musicVolume', volume);
+        $('#volume-value').text(`현재: ${volume}`);
+    });
+
+    const savedVolume = localStorage.getItem('musicVolume');
+    if (savedOpacity) {
+        $('#volume-slider').val(savedVolume);
+        $('#volume-value').text(`현재: ${savedVolume}`);
     }
 
     // 컨트롤 방식 선택
