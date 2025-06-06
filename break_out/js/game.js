@@ -23,8 +23,16 @@ let brickMoveY;
 let isRunning = true;
 const storage = window.localStorage;
 let special_item, background_image, background_opacity, paddle_image, ball_image, brick_image, music, control;
+let ballImgObj = null;
+let paddleImgObj = null;
+let backgroundImgObj = null;
+let brickImgObj = null;
+let bgmAudio = null;
+let preferences;
 let profile;
 let currentLevel = 0;
+let itemDisplayTimer = null;
+let AnimaID = null;
 const itemRate = {
     0: 0.2,
     1: 0.25,
@@ -333,7 +341,6 @@ function activateSpecialItem(itemType, brickI, brickJ) {
     console.log(`특수 아이템 활성화: ${item.name} - ${item.description}`);
 }
 
-let itemDisplayTimer = null;
 
 function showItem(item) {
     let item_container = $("#game-item");
@@ -377,39 +384,35 @@ function getIconPath(itemName) {
     return iconMap[itemName] || "Does not exist";
 }
 
-let ballImgObj = null;
-let paddleImgObj = null;
-let backgroundImgObj = null;
-let brickImgObj = null;
-let bgmAudio = null;
 
 function initSetting() {
-    // special_item = storage.getItem("settings")["special_item"] || true;
-    background_image = "../img/"+storage.getItem("backgroundImage")+".jpg" || "../img/bg1.jpg";
+    profile = profileManager.getCurrentProfile();
+    preferences = profile["preferences"];
+    console.log(preferences);
+    control = preferences["controlMethod"] || "mouse";
+    special_item = preferences["specialItem"] || true;
+    background_image = "../img/" + preferences["backgroundImage"] + ".jpg" || "../img/bg1.jpg";
     backgroundImgObj = new Image();
     backgroundImgObj.src = background_image;
-    background_opacity = Number(storage.getItem("backgroundOpacity")) || 1.0;
-    paddle_image = "../img/"+storage.getItem("selectedPaddle")+".jpg" || "../img/bat.jpg";
+    background_opacity = Number(preferences["backgroundOpacity"]) || 1.0;
+    paddle_image = "../img/" + preferences["selectedPaddle"] + ".jpg" || "../img/bat.jpg";
     paddleImgObj = new Image();
     paddleImgObj.src = paddle_image;
-    ball_image = "../img/"+storage.getItem("selectedBall")+".jpg" || "../img/grenade.jpg";
+    ball_image = "../img/" + preferences["selectedBall"] + ".jpg" || "../img/grenade.jpg";
     ballImgObj = new Image();
     ballImgObj.src = ball_image;
-    brick_image = "../img/"+storage.getItem("selectedBrick")+".jpg" || "../img/money.jpg";
+    brick_image = "../img/" + preferences["selectedBrick"] + ".jpg" || "../img/money.jpg";
     brickImgObj = new Image();
     brickImgObj.src = brick_image;
-    music = "../audio/"+storage.getItem("selectedMusic")+".mp3" || "../audio/1.mp3";
+    music = "../audio/" + preferences["selectedMusic"] + ".mp3" || "../audio/1.mp3";
     bgmAudio = new Audio(music);
     bgmAudio.loop = true;
-    bgmAudio.volume = Number(storage.getItem("musicVolume"));  // 0.0 ~ 1.0
+    bgmAudio.volume = preferences["musicVolume"] || 0.5;  // 0.0 ~ 1.0
     document.addEventListener("click", () => {
         if (bgmAudio && bgmAudio.paused) {
             bgmAudio.play();
         }
     });
-    // control = storage.getItem("settings")["control"] || "mouse";
-    //TODO Error: profile is null - need to check JSON.parse or stringify
-    profile = profileManager.getCurrentProfile();
     console.log(`Current level: ${profile["current_level"]}`);
     currentLevel = profile["current_level"];
     brickRow = currentLevel + 3 > 5 ? 5 : currentLevel + 3;
@@ -439,7 +442,7 @@ function saveRecord(is_win, is_impossible) {
         profile["average_survived_time"] = stringTime(average_survived_time);
     }
     profileManager.updateProfile(profile["name"], profile);
-    storage.setItem("gameResult", JSON.stringify( {...status, "is_win": is_win} ));
+    storage.setItem("gameResult", JSON.stringify({...status, "is_win": is_win}));
 }
 
 function StartButton() {
@@ -510,17 +513,19 @@ function mouseMoveHandler(e) {
 
 // 키보드 방향키 좌우로 패들 움직이기 Work in Progress
 function keyboardMoveHandler(e) {
-    // const currentTime = Date.now();
-    // if (e.type === "keydown" && currentTime - lastControlTime < controlDelay) return;
-    // TODO: 입력 반전 아이템 적용시 방향키 입력 반전 적용
-    if (e.key === 'Right' || e.key === 'ArrowRight') {
+    const currentTime = Date.now();
+    if (e.type === "keydown" && currentTime - lastControlTime < controlDelay) return;
+
+    const isReversed = activeEffects.reverseControl.active;
+
+    if ((isReversed ? e.key === 'Left' || e.key === 'ArrowLeft' : e.key === 'Right' || e.key === 'ArrowRight')) {
         if (e.type === "keydown") {
             rightPressed = true;
             lastControlTime = currentTime;
         } else if (e.type === "keyup") {
             rightPressed = false;
         }
-    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+    } else if ((isReversed ? e.key === 'Right' || e.key === 'ArrowRight' : e.key === 'Left' || e.key === 'ArrowLeft')) {
         if (e.type === "keydown") {
             leftPressed = true;
             lastControlTime = currentTime;
@@ -543,7 +548,7 @@ function drawBall() {
 }
 
 function drawPaddle() {
-    if(paddleImgObj && paddleImgObj.complete) {
+    if (paddleImgObj && paddleImgObj.complete) {
         context.drawImage(paddleImgObj, paddle.x, paddle.y, paddle.width, paddle.height);
     } else {
         context.beginPath();
@@ -584,11 +589,11 @@ function drawBrick() {
                     );
                 } else {
                     if (brickImgObj && brickImgObj.complete) {
-                    context.drawImage(brickImgObj, bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
-                } else {
-                    context.fillStyle = "white";
-                    context.fillRect(bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
-                }
+                        context.drawImage(brickImgObj, bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
+                    } else {
+                        context.fillStyle = "white";
+                        context.fillRect(bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
+                    }
                 }
             }
         }
@@ -629,7 +634,7 @@ function setBrick() {
         bricks[i] = []
         for (let j = 0; j < brickCol; j++) {
             let specialItem = null;
-            if (Math.random() < itemRate[currentLevel]) {
+            if (special_item && Math.random() < itemRate[currentLevel]) {
                 const itemKeys = Object.keys(SPECIAL_ITEMS);
                 specialItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
                 // specialItem = itemKeys[6];
@@ -833,7 +838,9 @@ function drawGame() {
         context.lineWidth = 1;
     }
 }
-let AnimaID = null;
+
+
+
 function gameLoop() { // Game 재귀적 실행
     if (!isRunning) {
         if (AnimaID) {
@@ -849,9 +856,18 @@ function gameLoop() { // Game 재귀적 실행
 
 function init() {
     initSetting();
-    $(document).mousemove(mouseMoveHandler);
-    $(document).keydown(keyboardMoveHandler);
-    $(document).keyup(keyboardMoveHandler);
+    switch (control) {
+        case "mouse":
+            $(document).mousemove(mouseMoveHandler);
+            break;
+        case "keyboard":
+            $(document).keydown(keyboardMoveHandler);
+            $(document).keyup(keyboardMoveHandler);
+            break;
+        default:
+            $(document).mousemove(mouseMoveHandler);
+            break;
+    }
 
     canvas = document.getElementById("canvas");
     context = canvas.getContext("2d");
