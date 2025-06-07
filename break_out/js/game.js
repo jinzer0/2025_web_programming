@@ -431,7 +431,7 @@ function initSetting() {
     preferences = profile["preferences"];
     console.log(preferences);
     control = preferences["controlMethod"] || "mouse";
-    special_item = preferences["specialItem"] || true;
+    special_item = preferences["specialItem"] && true;
     background_image = "../img/" + preferences["backgroundImage"] + ".jpg" || "../img/bg1.jpg";
     backgroundImgObj = new Image();
     backgroundImgObj.src = background_image;
