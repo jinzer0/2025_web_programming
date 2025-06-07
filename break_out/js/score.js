@@ -23,7 +23,7 @@ function sortData() {
         "colspan":"4",
         "style":"color:lightgrey"
     });
-    second_row_td.text("상위 10개 기록만 표시 됩니다.");
+    second_row_td.text("최고 기록만 표시 됩니다.");
     second_row_tr.append(second_row_td);
     tbody.append(second_row_tr);
 
@@ -47,5 +47,3 @@ function sortData() {
 
 
 }
-
-
