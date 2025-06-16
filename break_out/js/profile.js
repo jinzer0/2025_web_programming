@@ -28,18 +28,29 @@ $(document).ready(function () {
 
     function updateDeleteModeStyle() {
         const $deleteButton = $('.menu-item:contains("Delete Profile")');
+        const $createButton = $('.menu-item:contains("Create New Profile")');
+        const $allProfiles = $('.profile-item');
+        const $nonEmpty = $allProfiles.not('.empty');
+        const $empty = $allProfiles.filter('.empty');
 
         if (isDeleteMode) {
-            $('.profile-item').not('.empty').addClass('delete-mode');
+            $nonEmpty.removeClass('delete-mode');
+            $nonEmpty.addClass('delete-mode');
             $deleteButton.addClass('delete-active');
+
+            $empty.hide(); // 빈 프로필 숨김
+            $createButton.addClass('disabled'); // 새 프로필 버튼 비활성화
         } else {
-            $('.profile-item').removeClass('delete-mode');
+            $nonEmpty.removeClass('delete-mode');
             $deleteButton.removeClass('delete-active');
+
+            $empty.show(); // 빈 프로필 다시 표시
+            $createButton.removeClass('disabled'); // 새 프로필 버튼 활성화
         }
     }
 
     // 프로필 생성
-    $('.menu-item:contains("Create New Profile")').on('click', function () {
+    function promptCreateProfile() {
         const profiles = profileManager.getAllProfiles();
 
         if (profiles.length >= maxProfiles) {
@@ -55,10 +66,19 @@ $(document).ready(function () {
             }
             loadProfiles();
         }
-    });
+    }
+
+    $('.menu-item:contains("Create New Profile")').on('click', promptCreateProfile);
 
     // 삭제 모드 토글
     $('.menu-item:contains("Delete Profile")').on('click', function () {
+        const hasProfiles = profileManager.getAllProfiles().length > 0;
+
+        if (!hasProfiles) {
+            alert("삭제할 프로필이 없습니다.");
+            return;
+        }
+
         isDeleteMode = !isDeleteMode;
         updateDeleteModeStyle();
     });
@@ -69,21 +89,29 @@ $(document).ready(function () {
         const profiles = profileManager.getAllProfiles();
         const selected = profiles[index];
 
-        if (!selected) return;
-
+        // 삭제 모드일 때
         if (isDeleteMode) {
-            if (confirm(`"${selected.name}" 프로필을 삭제할까요?`)) {
-                profileManager.deleteProfile(selected.name);
+            if (profiles[index] && confirm(`"${profiles[index].name}" 프로필을 삭제할까요?`)) {
+                profileManager.deleteProfile(profiles[index].name);
                 loadProfiles();
                 isDeleteMode = false;
                 updateDeleteModeStyle();
             }
-        } else if (!$(this).hasClass('empty')) {
-            profileManager.setCurrentProfile(selected.name);
-            let isSettingMode = JSON.parse(localStorage.getItem("isSettingMode"));
-            if (isSettingMode) window.location.href = "setting.html";
-            else window.location.href = "level.html";
+            return;
         }
+
+        // 빈 슬롯 클릭 시 새 프로필 생성 제안
+        if ($(this).hasClass('empty')) {
+            promptCreateProfile();
+            return;
+        }
+
+        // 프로필 선택
+        const profileName = profiles[index].name;
+        profileManager.setCurrentProfile(profileName);
+        let isSettingMode = JSON.parse(localStorage.getItem("isSettingMode"));
+        if (isSettingMode) window.location.href = "setting.html";
+        else window.location.href = "level.html";
     });
 
     loadProfiles();

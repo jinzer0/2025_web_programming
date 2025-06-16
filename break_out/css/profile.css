@@ -69,24 +69,32 @@
     gap: 5rem;
 }
 
-/* 삭제 모드에서 hover 시 빨간색 강조 */
-.profile-item.delete-mode:hover {
+/* 삭제 모드 시 전체 프로필 강조 표시 */
+.profile-item.delete-mode {
     background-color: red;
     color: white;
-    border-color: red;
-    transition: 0.3s ease-in-out;
+    border: 2px solid darkred;
+    transition: background-color 0.5s, color 0.5s;
 }
 
-/* 삭제 모드에서 강제로 hover 상태처럼 보이게 */
+/* 삭제 모드 버튼 반전 스타일 */
 .menu-item.delete-active {
     background-color: white;
     color: black;
+}
+
+
+/* 삭제 모드에서 hover 시 더 진한 강조 */
+.profile-item.delete-mode:hover {
+    background-color: darkred;
+    color: white;
 }
 
 .profile-item {
     padding: 15px;
     width: 15rem;
     height: 4rem;
+    transition: background-color 0.5s, color 0.5s, border-color 0.5s;
 }
 
 .profile-item:nth-of-type(3n+1) {
@@ -121,4 +129,10 @@ p {
     background-color: white;
     cursor: pointer;
     transition: 0.3s ease-in;
+}
+
+.menu-item.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: not-allowed;
 }
