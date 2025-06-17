@@ -32,6 +32,26 @@
         if (ballY <= 10 || ballY >= 190) y_sign *= -1;
         if (ballX <= 10 || ballX >= 290) x_sign *= -1;
     }
+    function drawBackground() {
+        context.drawImage(image, 0, 270);
+        context.drawImage(backimage, 450, 60);
+    }
+
+    context.beginPath();
+    context.arc(100, 100, 80, 0, 2*Math.PI, false);
+    context.strokeStyle = "red";
+    context.stroke();
+
+    context.beginPath();
+    context.arc(100, 100, 60, 0, 1.5*Math.PI, false);
+    context.closePath();
+    context.strokeStyle = "blue";
+    context.stroke();
+
+    context.beginPath();
+    context.arc(100, 100, 40, 0, 1.5*Math.PI, false);
+    context.strokeStyle = "green";
+    context.stroke();
 
     function stopBall() {
         clearInterval(timer);

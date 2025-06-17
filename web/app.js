@@ -13,7 +13,7 @@ const options = {
 let app = express();
 let router = express.Router();
 app.set("port", process.env.PORT || 8080);
-app.set("host", "172.16.164.92");
+app.set("host", "localhost");
 app.use(static_s(__dirname));
 
 app.use(express.urlencoded());
@@ -40,7 +40,7 @@ router.route("/").get(function(req, res) {
 
 
 router.route("/rss").get(function(req, res) {
-    console.log("rss daa requested");
+    console.log("rss data requested");
     let feed = "https://d2.naver.com/d2.atom";
     https.get(feed, function(httpres) {
         let rss_res = "";
